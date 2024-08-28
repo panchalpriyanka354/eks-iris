@@ -10,11 +10,11 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - sudo docker build -t iris-model:latest .
-      - sudo docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+      - docker build -t iris-model:latest .
+      - docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
 
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - sudo docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+      - docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
