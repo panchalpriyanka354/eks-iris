@@ -1,0 +1,5 @@
+# src/requirements.txt
+boto3
+pandas
+scikit-learn
+joblib

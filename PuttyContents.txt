@@ -1,0 +1,236 @@
+ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile
+fatal error: Unable to locate credentials
+[ec2-user@ip-172-31-41-216 ~]$ aws configure
+AWS Access Key ID [None]: AKIA2UC3CX7ON4KNN4YV
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-east-1
+Default output format [None]: json
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile
+fatal error: An error occurred (404) when calling the HeadObject operation: Key "Dockerfile" does not exist
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile
+fatal error: An error occurred (404) when calling the HeadObject operation: Key "Dockerfile" does not exist
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile^C
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-iris-project-data/Dockerfile  Dockerfile
+download: s3://ml-iris-project-data/Dockerfile to ./Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ ls
+Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ cat Dockerfile
+# Base image
+FROM python:3.8-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file
+COPY src/requirements.txt .
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Copy the source code
+COPY src/ .
+
+# Set environment variables for AWS access
+ENV AWS_ACCESS_KEY_ID=your_access_key_id
+ENV AWS_SECRET_ACCESS_KEY=your_secret_access_key
+ENV AWS_DEFAULT_REGION=your_aws_region
+
+# Run the training script
+CMD ["python", "train.py"]
+[ec2-user@ip-172-31-41-216 ~]$ docker build -t iris-docker-image:latest .
+ERROR: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+[ec2-user@ip-172-31-41-216 ~]$ who am i
+ec2-user pts/0        2024-08-16 18:23 (122.164.84.21)
+[ec2-user@ip-172-31-41-216 ~]$ ls -ltr
+total 4
+-rw-r--r--. 1 ec2-user ec2-user 479 Aug 16 18:03 Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ chmod 777 Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ docker build -t iris-docker-image:latest .
+ERROR: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+[ec2-user@ip-172-31-41-216 ~]$ ^C
+[ec2-user@ip-172-31-41-216 ~]$ sudo service docker start
+Redirecting to /bin/systemctl start docker.service
+[ec2-user@ip-172-31-41-216 ~]$ sudo service docker status
+Redirecting to /bin/systemctl status docker.service
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; preset: >
+     Active: active (running) since Fri 2024-08-16 18:25:30 UTC; 14min ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+    Process: 23808 ExecStartPre=/bin/mkdir -p /run/docker (code=exited, status=>
+    Process: 23825 ExecStartPre=/usr/libexec/docker/docker-setup-runtimes.sh (c>
+   Main PID: 23827 (dockerd)
+      Tasks: 7
+     Memory: 29.5M
+        CPU: 420ms
+     CGroup: /system.slice/docker.service
+             └─23827 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/con>
+
+Aug 16 18:25:29 ip-172-31-41-216.us-east-2.compute.internal systemd[1]: Startin>
+Aug 16 18:25:29 ip-172-31-41-216.us-east-2.compute.internal dockerd[23827]: tim>
+Aug 16 18:25:29 ip-172-31-41-216.us-east-2.compute.internal dockerd[23827]: tim>
+Aug 16 18:25:30 ip-172-31-41-216.us-east-2.compute.internal dockerd[23827]: tim>
+Aug 16 18:25:30 ip-172-31-41-216.us-east-2.compute.internal dockerd[23827]: tim>
+Aug 16 18:25:30 ip-172-31-41-216.us-east-2.compute.internal dockerd[23827]: tim>
+Aug 16 18:25:30 ip-172-31-41-216.us-east-2.compute.internal dockerd[23827]: tim>
+Aug 16 18:25:30 ip-172-31-41-216.us-east-2.compute.internal systemd[1]: Started>
+lines 1-22/22 (END)
+[ec2-user@ip-172-31-41-216 ~]$ docker --version
+Docker version 25.0.5, build 5dc9bcc
+[ec2-user@ip-172-31-41-216 ~]$ sudo service docker restart
+Redirecting to /bin/systemctl restart docker.service
+[ec2-user@ip-172-31-41-216 ~]$ sudo docker build -t iris-docker-image:latest .
+[+] Building 0.6s (9/9) FINISHED                                 docker:default
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 577B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.8-slim         0.4s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => CANCELED [1/5] FROM docker.io/library/python:3.8-slim@sha256:f8b4609a  0.1s
+ => => resolve docker.io/library/python:3.8-slim@sha256:f8b4609a66cdaa133  0.0s
+ => => sha256:f8b4609a66cdaa133fa57e2ca8e2f03de2ebb44ff 10.41kB / 10.41kB  0.0s
+ => => sha256:75eba3619562d6dd5eb6903e6ceae88c836bae0830e 1.94kB / 1.94kB  0.0s
+ => => sha256:e7fd04b8ffc77e5bb0ad4d3514643299fe6d1f33465 6.93kB / 6.93kB  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => ERROR [3/5] COPY src/requirements.txt .                                0.0s
+ => CACHED [4/5] RUN pip install -r requirements.txt                       0.0s
+ => ERROR [5/5] COPY src/ .                                                0.0s
+------
+ > [3/5] COPY src/requirements.txt .:
+------
+------
+ > [5/5] COPY src/ .:
+------
+Dockerfile:14
+--------------------
+  12 |
+  13 |     # Copy the source code
+  14 | >>> COPY src/ .
+  15 |
+  16 |     # Set environment variables for AWS access
+--------------------
+ERROR: failed to solve: failed to compute cache key: failed to calculate checksum of ref f0eda30c-a127-47fe-8219-90c7d5988de5::n66645ykqn16r1ieh1gw9v05t: "/src": not found
+[ec2-user@ip-172-31-41-216 ~]$
+[ec2-user@ip-172-31-41-216 ~]$ vi Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ cat Dockerfile
+# Base image
+FROM python:3.8-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file
+COPY src/requirements.txt .
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Copy the source code
+COPY src/ .
+
+# Set environment variables for AWS access
+ENV AWS_ACCESS_KEY_ID=your_access_key_id
+ENV AWS_SECRET_ACCESS_KEY=your_secret_access_key
+ENV AWS_DEFAULT_REGION=your_aws_region
+
+# Run the training script
+CMD ["python", "train.py"]
+[ec2-user@ip-172-31-41-216 ~]$ echo "^C
+[ec2-user@ip-172-31-41-216 ~]$ echo "ENV AWS_ACCESS_KEY_ID= AKIA2UC3CX7ON4KNN4YV  >> Dockerfile
+>
+> echo "ENV AWS_SECRET_ACCESS_KEY_ID=1dlP7hdulAkoAw19RJIG0tmeVId1flV6mkgQJ6T6  >> Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ cat Dockerfile
+# Base image
+FROM python:3.8-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file
+COPY src/requirements.txt .
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Copy the source code
+COPY src/ .
+
+# Set environment variables for AWS access
+ENV AWS_ACCESS_KEY_ID=your_access_key_id
+ENV AWS_SECRET_ACCESS_KEY=your_secret_access_key
+ENV AWS_DEFAULT_REGION=your_aws_region
+
+# Run the training script
+CMD ["python", "train.py"]
+ENV AWS_ACCESS_KEY_ID= AKIA2UC3CX7ON4KNN4YV  >> Dockerfile
+
+echo ENV AWS_SECRET_ACCESS_KEY_ID=1dlP7hdulAkoAw19RJIG0tmeVId1flV6mkgQJ6T6
+[ec2-user@ip-172-31-41-216 ~]$ echo "ENV AWS_ACCESS_KEY_ID= AKIA2UC3CX7ON4KNN4YV  >> Dockerfile
+
+echo "ENV AWS_SECRET_ACCESS_KEY_ID=1dlP7hdulAkoAw19RJIG0tmeVId1flV6mkgQJ6T6" >> Dockerfile
+> ^C
+[ec2-user@ip-172-31-41-216 ~]$ echo "ENV AWS_ACCESS_KEY_ID= AKIA2UC3CX7ON4KNN4YV  >> Dockerfile
+
+echo "ENV AWS_SECRET_ACCESS_KEY_ID=1dlP7hdulAkoAw19RJIG0tmeVId1flV6mkgQJ6T6" >> Dockerfile
+> ^C
+[ec2-user@ip-172-31-41-216 ~]$ echo "ENV AWS_ACCESS_KEY_ID= AKIA2UC3CX7ON4KNN4YV  >> Dockerfile
+
+echo "ENV AWS_SECRET_ACCESS_KEY_ID=1dlP7hdulAkoAw19RJIG0tmeVId1flV6mkgQJ6T6" >> Dockerfile
+> ^C
+[ec2-user@ip-172-31-41-216 ~]$ echo "ENV AWS_ACCESS_KEY_ID= AKIA2UC3CX7ON4KNN4Y"^C >> Dockerfile
+
+echo "ENV AWS_SECRET_ACCESS_KEY_ID=1dlP7hdulAkoAw19RJIG0tmeVId1flV6mkgQJ6T6" >> Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ echo "ENV AWS_ACCESS_KEY_ID= AKIA2UC3CX7ON4KNN4YV"  >> Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ echo "ENV AWS_ACCESS_KEY_ID =AKIA2UC3CX7ON4KNN4YV "  >> Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ vi Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ sudo docker build -t iris-docker-image:latest .
+[+] Building 0.3s (9/9) FINISHED                                 docker:default
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 591B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.8-slim         0.2s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.8-slim@sha256:f8b4609a66cdaa133  0.0s
+ => => resolve docker.io/library/python:3.8-slim@sha256:f8b4609a66cdaa133  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY src/requirements.txt .                               0.0s
+ => CACHED [4/5] RUN pip install -r requirements.txt                       0.0s
+ => ERROR [5/5] COPY src/ .                                                0.0s
+------
+ > [5/5] COPY src/ .:
+------
+Dockerfile:14
+--------------------
+  12 |
+  13 |     # Copy the source code
+  14 | >>> COPY src/ .
+  15 |
+  16 |     # Set environment variables for AWS access
+--------------------
+ERROR: failed to solve: failed to compute cache key: failed to calculate checksum of ref f0eda30c-a127-47fe-8219-90c7d5988de5::z7fwr2br5jthyoe8j821ezkwl: "/src": not found
+[ec2-user@ip-172-31-41-216 ~]$ vi Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-iris-project-data/Dockerfile  Dockerfile^C
+[ec2-user@ip-172-31-41-216 ~]$ ^C
+[ec2-user@ip-172-31-41-216 ~]$ [ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile
+fatal error: Unable to locate credentials
+[ec2-user@ip-172-31-41-216 ~]$ aws configure
+AWS Access Key ID [None]: AKIA2UC3CX7ON4KNN4YV
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-east-1
+Default output format [None]: json
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile
+fatal error: An error occurred (404) when calling the HeadObject operation: Key "Dockerfile" does not exist
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile
+fatal error: An error occurred (404) when calling the HeadObject operation: Key "Dockerfile" does not exist
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-project-iris-data/Dockerfile  Dockerfile^C
+[ec2-user@ip-172-31-41-216 ~]$ aws s3 cp s3://ml-iris-project-data/Dockerfile  Dockerfile
+download: s3://ml-iris-project-data/Dockerfile to ./Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ ls
+Dockerfile
+[ec2-user@ip-172-31-41-216 ~]$ cat Dockerfile
+^Cc2-user@ip-172-31-41-216 ~]$ ^Cs s3 cp s3://ml-iris-project-data/Dockerfile  D
+[ec2-user@ip-172-31-41-216 ~]$

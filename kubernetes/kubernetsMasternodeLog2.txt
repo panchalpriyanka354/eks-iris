@@ -1,0 +1,410 @@
+[root@ip-172-31-41-216 ec2-user]# mkdir -p $HOME/.kube
+export KUBECONFIG=/etc/kubernetes/admin.conf
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+[root@ip-172-31-41-216 ec2-user]#  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+cp: cannot stat '/etc/kubernetes/admin.conf': No such file or directory
+[root@ip-172-31-41-216 ec2-user]# mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+cp: cannot stat '/etc/kubernetes/admin.conf': No such file or directory
+[root@ip-172-31-41-216 ec2-user]# kubectl
+kubectl controls the Kubernetes cluster manager.
+
+ Find more information at: https://kubernetes.io/docs/reference/kubectl/
+
+Basic Commands (Beginner):
+  create          Create a resource from a file or from stdin
+  expose          Take a replication controller, service, deployment or pod and expose it as a new Kubernetes service
+  run             Run a particular image on the cluster
+  set             Set specific features on objects
+
+Basic Commands (Intermediate):
+  explain         Get documentation for a resource
+  get             Display one or many resources
+  edit            Edit a resource on the server
+  delete          Delete resources by file names, stdin, resources and names, or by resources and label selector
+
+Deploy Commands:
+  rollout         Manage the rollout of a resource
+  scale           Set a new size for a deployment, replica set, or replication controller
+  autoscale       Auto-scale a deployment, replica set, stateful set, or replication controller
+
+Cluster Management Commands:
+  certificate     Modify certificate resources
+  cluster-info    Display cluster information
+  top             Display resource (CPU/memory) usage
+  cordon          Mark node as unschedulable
+  uncordon        Mark node as schedulable
+  drain           Drain node in preparation for maintenance
+  taint           Update the taints on one or more nodes
+
+Troubleshooting and Debugging Commands:
+  describe        Show details of a specific resource or group of resources
+  logs            Print the logs for a container in a pod
+  attach          Attach to a running container
+  exec            Execute a command in a container
+  port-forward    Forward one or more local ports to a pod
+  proxy           Run a proxy to the Kubernetes API server
+  cp              Copy files and directories to and from containers
+  auth            Inspect authorization
+  debug           Create debugging sessions for troubleshooting workloads and nodes
+  events          List events
+
+Advanced Commands:
+  diff            Diff the live version against a would-be applied version
+  apply           Apply a configuration to a resource by file name or stdin
+  patch           Update fields of a resource
+  replace         Replace a resource by file name or stdin
+  wait            Experimental: Wait for a specific condition on one or many resources
+  kustomize       Build a kustomization target from a directory or URL
+
+Settings Commands:
+  label           Update the labels on a resource
+  annotate        Update the annotations on a resource
+  completion      Output shell completion code for the specified shell (bash, zsh, fish, or powershell)
+
+Subcommands provided by plugins:
+
+Other Commands:
+  api-resources   Print the supported API resources on the server
+  api-versions    Print the supported API versions on the server, in the form of "group/version"
+  config          Modify kubeconfig files
+  plugin          Provides utilities for interacting with plugins
+  version         Print the client and server version information
+
+Usage:
+  kubectl [flags] [options]
+
+Use "kubectl <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+E0818 11:12:17.087418   37539 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:12:17.090817   37539 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:12:17.092410   37539 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:12:17.094340   37539 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:12:17.095622   37539 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[root@ip-172-31-41-216 ec2-user]# ping 3.18.214.150
+PING 3.18.214.150 (3.18.214.150) 56(84) bytes of data.
+^C
+--- 3.18.214.150 ping statistics ---
+11 packets transmitted, 0 received, 100% packet loss, time 10366ms
+
+[root@ip-172-31-41-216 ec2-user]# ping 3.18.214.151
+PING 3.18.214.151 (3.18.214.151) 56(84) bytes of data.
+^C
+--- 3.18.214.151 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2078ms
+
+[root@ip-172-31-41-216 ec2-user]# ping 3.18.214.17
+PING 3.18.214.17 (3.18.214.17) 56(84) bytes of data.
+^C
+--- 3.18.214.17 ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 3115ms
+
+[root@ip-172-31-41-216 ec2-user]# ping localhost
+PING localhost (127.0.0.1) 56(84) bytes of data.
+64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=127 time=0.031 ms
+64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=127 time=0.046 ms
+64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=127 time=0.039 ms
+^C
+--- localhost ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2045ms
+rtt min/avg/max/mdev = 0.031/0.038/0.046/0.006 ms
+[root@ip-172-31-41-216 ec2-user]# ping localhost:6443
+ping: localhost:6443: Name or service not known
+[root@ip-172-31-41-216 ec2-user]# kubectl
+kubectl controls the Kubernetes cluster manager.
+
+ Find more information at: https://kubernetes.io/docs/reference/kubectl/
+
+Basic Commands (Beginner):
+  create          Create a resource from a file or from stdin
+  expose          Take a replication controller, service, deployment or pod and expose it as a new Kubernetes service
+  run             Run a particular image on the cluster
+  set             Set specific features on objects
+
+Basic Commands (Intermediate):
+  explain         Get documentation for a resource
+  get             Display one or many resources
+  edit            Edit a resource on the server
+  delete          Delete resources by file names, stdin, resources and names, or by resources and label selector
+
+Deploy Commands:
+  rollout         Manage the rollout of a resource
+  scale           Set a new size for a deployment, replica set, or replication controller
+  autoscale       Auto-scale a deployment, replica set, stateful set, or replication controller
+
+Cluster Management Commands:
+  certificate     Modify certificate resources
+  cluster-info    Display cluster information
+  top             Display resource (CPU/memory) usage
+  cordon          Mark node as unschedulable
+  uncordon        Mark node as schedulable
+  drain           Drain node in preparation for maintenance
+  taint           Update the taints on one or more nodes
+
+Troubleshooting and Debugging Commands:
+  describe        Show details of a specific resource or group of resources
+  logs            Print the logs for a container in a pod
+  attach          Attach to a running container
+  exec            Execute a command in a container
+  port-forward    Forward one or more local ports to a pod
+  proxy           Run a proxy to the Kubernetes API server
+  cp              Copy files and directories to and from containers
+  auth            Inspect authorization
+  debug           Create debugging sessions for troubleshooting workloads and nodes
+  events          List events
+
+Advanced Commands:
+  diff            Diff the live version against a would-be applied version
+  apply           Apply a configuration to a resource by file name or stdin
+  patch           Update fields of a resource
+  replace         Replace a resource by file name or stdin
+  wait            Experimental: Wait for a specific condition on one or many resources
+  kustomize       Build a kustomization target from a directory or URL
+
+Settings Commands:
+  label           Update the labels on a resource
+  annotate        Update the annotations on a resource
+  completion      Output shell completion code for the specified shell (bash, zsh, fish, or powershell)
+
+Subcommands provided by plugins:
+
+Other Commands:
+  api-resources   Print the supported API resources on the server
+  api-versions    Print the supported API versions on the server, in the form of "group/version"
+  config          Modify kubeconfig files
+  plugin          Provides utilities for interacting with plugins
+  version         Print the client and server version information
+
+Usage:
+  kubectl [flags] [options]
+
+Use "kubectl <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+E0818 11:16:55.699774   37699 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:16:55.701125   37699 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:16:55.702473   37699 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:16:55.704501   37699 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+E0818 11:16:55.706236   37699 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"http://localhost:8080/api?timeout=32s\": dial tcp 127.0.0.1:8080: connect: connection refused"
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[root@ip-172-31-41-216 ec2-user]# kubeadm init
+[init] Using Kubernetes version: v1.31.0
+[preflight] Running pre-flight checks
+        [WARNING FileExisting-tc]: tc not found in system path
+error execution phase preflight: [preflight] Some fatal errors occurred:
+        [ERROR FileContent--proc-sys-net-ipv4-ip_forward]: /proc/sys/net/ipv4/ip_forward contents are not set to 1
+[preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+To see the stack trace of this error execute with --v=5 or higher
+[root@ip-172-31-41-216 ec2-user]# ^C
+[root@ip-172-31-41-216 ec2-user]# sudo kubeadm init --ignore-preflight-errors=all
+[init] Using Kubernetes version: v1.31.0
+[preflight] Running pre-flight checks
+        [WARNING FileExisting-tc]: tc not found in system path
+        [WARNING FileContent--proc-sys-net-ipv4-ip_forward]: /proc/sys/net/ipv4/ip_forward contents are not set to 1
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action beforehand using 'kubeadm config images pull'
+W0818 11:19:45.445470   37816 checks.go:846] detected that the sandbox image "registry.k8s.io/pause:3.8" of the container runtime is inconsistent with that used by kubeadm.It is recommended to use "registry.k8s.io/pause:3.10" as the CRI sandbox image.
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Generating "ca" certificate and key
+[certs] Generating "apiserver" certificate and key
+[certs] apiserver serving cert is signed for DNS names [ip-172-31-41-216.us-east-2.compute.internal kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 172.31.41.216]
+[certs] Generating "apiserver-kubelet-client" certificate and key
+[certs] Generating "front-proxy-ca" certificate and key
+[certs] Generating "front-proxy-client" certificate and key
+[certs] Generating "etcd/ca" certificate and key
+[certs] Generating "etcd/server" certificate and key
+[certs] etcd/server serving cert is signed for DNS names [ip-172-31-41-216.us-east-2.compute.internal localhost] and IPs [172.31.41.216 127.0.0.1 ::1]
+[certs] Generating "etcd/peer" certificate and key
+[certs] etcd/peer serving cert is signed for DNS names [ip-172-31-41-216.us-east-2.compute.internal localhost] and IPs [172.31.41.216 127.0.0.1 ::1]
+[certs] Generating "etcd/healthcheck-client" certificate and key
+[certs] Generating "apiserver-etcd-client" certificate and key
+[certs] Generating "sa" key and public key
+[kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+[kubeconfig] Writing "admin.conf" kubeconfig file
+[kubeconfig] Writing "super-admin.conf" kubeconfig file
+[kubeconfig] Writing "kubelet.conf" kubeconfig file
+[kubeconfig] Writing "controller-manager.conf" kubeconfig file
+[kubeconfig] Writing "scheduler.conf" kubeconfig file
+[etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+[control-plane] Using manifest folder "/etc/kubernetes/manifests"
+[control-plane] Creating static Pod manifest for "kube-apiserver"
+[control-plane] Creating static Pod manifest for "kube-controller-manager"
+[control-plane] Creating static Pod manifest for "kube-scheduler"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Starting the kubelet
+[wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests"
+[kubelet-check] Waiting for a healthy kubelet at http://127.0.0.1:10248/healthz. This can take up to 4m0s
+[kubelet-check] The kubelet is healthy after 1.001012124s
+[api-check] Waiting for a healthy API server. This can take up to 4m0s
+[api-check] The API server is healthy after 5.002533374s
+[upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
+[upload-certs] Skipping phase. Please see --upload-certs
+[mark-control-plane] Marking the node ip-172-31-41-216.us-east-2.compute.internal as control-plane by adding the labels: [node-role.kubernetes.io/control-plane node.kubernetes.io/exclude-from-external-load-balancers]
+[mark-control-plane] Marking the node ip-172-31-41-216.us-east-2.compute.internal as control-plane by adding the taints [node-role.kubernetes.io/control-plane:NoSchedule]
+[bootstrap-token] Using token: k0pgcp.e2y5fdtsrck2yagh
+[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 172.31.41.216:6443 --token k0pgcp.e2y5fdtsrck2yagh \
+        --discovery-token-ca-cert-hash sha256:28030b3c2d3c5e6b318adfb1614bdec3436ef3b2eb525a9c6cda35eb41d71324 
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+NAME                                          STATUS     ROLES           AGE   VERSION
+ip-172-31-41-216.us-east-2.compute.internal   NotReady   control-plane   69s   v1.31.0
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+Error from server (Timeout): the server was unable to return a response in the time allotted, but may still be processing the request (get nodes)
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+The connection to the server 172.31.41.216:6443 was refused - did you specify the right host or port?
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+The connection to the server 172.31.41.216:6443 was refused - did you specify the right host or port?
+[root@ip-172-31-41-216 ec2-user]# 
+[root@ip-172-31-41-216 ec2-user]# sudo kubeadm init --ignore-preflight-errors=all
+[init] Using Kubernetes version: v1.31.0
+[preflight] Running pre-flight checks
+        [WARNING FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml]: /etc/kubernetes/manifests/kube-apiserver.yaml already exists
+        [WARNING FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml]: /etc/kubernetes/manifests/kube-controller-manager.yaml already exists
+        [WARNING FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml]: /etc/kubernetes/manifests/kube-scheduler.yaml already exists
+        [WARNING FileAvailable--etc-kubernetes-manifests-etcd.yaml]: /etc/kubernetes/manifests/etcd.yaml already exists
+        [WARNING FileExisting-tc]: tc not found in system path
+        [WARNING Port-10250]: Port 10250 is in use
+        [WARNING FileContent--proc-sys-net-ipv4-ip_forward]: /proc/sys/net/ipv4/ip_forward contents are not set to 1
+        [WARNING DirAvailable--var-lib-etcd]: /var/lib/etcd is not empty
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action beforehand using 'kubeadm config images pull'
+W0818 11:30:50.147464   42785 checks.go:846] detected that the sandbox image "registry.k8s.io/pause:3.8" of the container runtime is inconsistent with that used by kubeadm.It is recommended to use "registry.k8s.io/pause:3.10" as the CRI sandbox image.
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Using existing ca certificate authority
+[certs] Using existing apiserver certificate and key on disk
+[certs] Using existing apiserver-kubelet-client certificate and key on disk
+[certs] Using existing front-proxy-ca certificate authority
+[certs] Using existing front-proxy-client certificate and key on disk
+[certs] Using existing etcd/ca certificate authority
+[certs] Using existing etcd/server certificate and key on disk
+[certs] Using existing etcd/peer certificate and key on disk
+[certs] Using existing etcd/healthcheck-client certificate and key on disk
+[certs] Using existing apiserver-etcd-client certificate and key on disk
+[certs] Using the existing "sa" key
+[kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+[kubeconfig] Using existing kubeconfig file: "/etc/kubernetes/admin.conf"
+[kubeconfig] Using existing kubeconfig file: "/etc/kubernetes/super-admin.conf"
+[kubeconfig] Using existing kubeconfig file: "/etc/kubernetes/kubelet.conf"
+[kubeconfig] Using existing kubeconfig file: "/etc/kubernetes/controller-manager.conf"
+[kubeconfig] Using existing kubeconfig file: "/etc/kubernetes/scheduler.conf"
+[etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+[control-plane] Using manifest folder "/etc/kubernetes/manifests"
+[control-plane] Creating static Pod manifest for "kube-apiserver"
+[control-plane] Creating static Pod manifest for "kube-controller-manager"
+[control-plane] Creating static Pod manifest for "kube-scheduler"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Starting the kubelet
+[wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests"
+[kubelet-check] Waiting for a healthy kubelet at http://127.0.0.1:10248/healthz. This can take up to 4m0s
+[kubelet-check] The kubelet is healthy after 502.165945ms
+[api-check] Waiting for a healthy API server. This can take up to 4m0s
+
+[api-check] The API server is healthy after 59.001839954s
+[upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
+[upload-certs] Skipping phase. Please see --upload-certs
+[mark-control-plane] Marking the node ip-172-31-41-216.us-east-2.compute.internal as control-plane by adding the labels: [node-role.kubernetes.io/control-plane node.kubernetes.io/exclude-from-external-load-balancers]
+[mark-control-plane] Marking the node ip-172-31-41-216.us-east-2.compute.internal as control-plane by adding the taints [node-role.kubernetes.io/control-plane:NoSchedule]
+[bootstrap-token] Using token: 7mdis1.uz5j1a8cgiqqhg7t
+[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 172.31.41.216:6443 --token 7mdis1.uz5j1a8cgiqqhg7t \
+        --discovery-token-ca-cert-hash sha256:28030b3c2d3c5e6b318adfb1614bdec3436ef3b2eb525a9c6cda35eb41d71324 
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+
+NAME                                          STATUS     ROLES           AGE   VERSION
+ip-172-31-35-139.us-east-2.compute.internal   NotReady   <none>          10m   v1.31.0
+ip-172-31-41-216.us-east-2.compute.internal   NotReady   control-plane   13m   v1.31.0
+[root@ip-172-31-41-216 ec2-user]# 
+[root@ip-172-31-41-216 ec2-user]# ls
+Dockerfile  aws  awscliv2.zip  deployment.yaml  model.py  requirements.txt  service.yaml
+[root@ip-172-31-41-216 ec2-user]# kubectl apply -f deployment.yaml
+error: error validating "deployment.yaml": error validating data: failed to download openapi: Get "https://172.31.41.216:6443/openapi/v2?timeout=32s": dial tcp 172.31.41.216:6443: connect: connection refused; if you choose to ignore these errors, turn validation off with --validate=false
+[root@ip-172-31-41-216 ec2-user]# kubectl apply -f deployment.yaml --validate=false
+Error from server (Forbidden): error when retrieving current configuration of:
+Resource: "apps/v1, Resource=deployments", GroupVersionKind: "apps/v1, Kind=Deployment"
+Name: "iris-model-deployment", Namespace: "default"
+from server for: "deployment.yaml": deployments.apps "iris-model-deployment" is forbidden: User "kubernetes-admin" cannot get resource "deployments" in API group "apps" in the namespace "default"
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl status kube-apiserver
+Unit kube-apiserver.service could not be found.
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl restart kube-apiserver
+Failed to restart kube-apiserver.service: Unit kube-apiserver.service not found.
+[root@ip-172-31-41-216 ec2-user]# ^C
+[root@ip-172-31-41-216 ec2-user]# kubectl get pods -n kube-system
+The connection to the server 172.31.41.216:6443 was refused - did you specify the right host or port?
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl restart kubelet
+[root@ip-172-31-41-216 ec2-user]# kubectl get pods -n kube-system
+
+Get "https://172.31.41.216:6443/api/v1/namespaces/kube-system/pods?limit=500": dial tcp 172.31.41.216:6443: connect: connection refused - error from a previous attempt: http2: server sent GOAWAY and closed the connection; LastStreamID=1, ErrCode=NO_ERROR, debug=""
+[root@ip-172-31-41-216 ec2-user]# 
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl restart kube-apiserver
+Failed to restart kube-apiserver.service: Unit kube-apiserver.service not found.
+[root@ip-172-31-41-216 ec2-user]# kubectl get pods -n kube-system
+The connection to the server 172.31.41.216:6443 was refused - did you specify the right host or port?
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl restart kubelet
+[root@ip-172-31-41-216 ec2-user]# kubectl get pods -n kube-system
+The connection to the server 172.31.41.216:6443 was refused - did you specify the right host or port?
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl restart kube-apiserver
+Failed to restart kube-apiserver.service: Unit kube-apiserver.service not found.
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl restart kube-apiserver

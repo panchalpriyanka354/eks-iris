@@ -1,0 +1,633 @@
+
+project folder structure
+-------------------------
+ml-iris-project/
+│
+├── data/
+│   ├── iris_train.csv
+│   └── iris_test.csv
+│
+├── src/
+│   ├── model.py          # Contains the model training code
+│   ├── train.py          # Script to trigger training using the S3 data
+│   ├── inference.py      # Script for model inference (optional)
+│   └── requirements.txt  # Python dependencies
+│
+├── Dockerfile            # Dockerfile for the model
+├── kubernetes/
+│   ├── deployment.yaml   # Kubernetes deployment configuration
+│   └── service.yaml      # Kubernetes service configuration
+│
+├── scripts/
+│   ├── split_data.py     # Script to split data into train and test sets
+│   └── upload_to_s3.sh   # Script to upload data to S3
+│
+└── README.md             # Instructions and documentation
+
+
+
+-------------
+Step 1: Preparing Your S3 Buckets
+Create S3 Buckets:
+
+Log in to AWS Management Console.
+Navigate to the S3 service.
+Create two buckets: iris-train-data and iris-test-data.
+Upload Data:
+=============install python ================
+sudo yum install python
+sudo yum update -y
+sudo yum install python3 -y
+which python3
+which pip3
+sudo ln -s /usr/bin/python3 /usr/bin/python
+sudo ln -s /usr/bin/pip3 /usr/bin/pip
+# sudo yum install -y python3
+# sudo alternatives --set python3 /usr/bin/python3.7
+sudo curl -O https://bootstrap.pypa.io/get-pip.py
+sudo python3 get-pip.py
+
+echo 'export PATH=$PATH:/usr/local/bin/python3' >> ~/.bash_profile
+echo 'export PATH=$PATH:/usr/local/bin/pip3' >> ~/.bash_profile
+source ~/.bash_profile
+
+ pip3 --version
+pip 24.2 from /usr/local/lib/python3.9/site-packages/pip (python 3.9)
+
+9+*9
+
+Run the script to generate iris_train.csv and iris_test.csv:
+python scripts/split_data.py
+
+====== import the files from s3 into ec2 - for this install AWS CLI on ec2
+aws configure
+AWS Access Key ID [None]: AKIA2UC3CX7ON4KNN4YV
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-east-1      
+Default output format [None]:  
+[ec2-user@ip-172-31-32-34 ~]$ aws s3 cp s3://ml-iris-project-data/src/model.py model.py
+download: s3://ml-iris-project-data/src/model.py to ./model.py    
+[ec2-user@ip-172-31-32-34 ~]$ ls
+get-pip.py  model.py
+
+
+------------------------------
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+# Load the Iris dataset
+df = pd.read_csv('https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv')
+
+# Split the data into training and testing datasets
+train_data, test_data = train_test_split(df, test_size=0.2, random_state=42)
+
+# Save the datasets as CSV files
+train_data.to_csv('iris_train.csv', index=False)
+test_data.to_csv('iris_test.csv', index=False)
+
+-------------------
+3. Run the Script:
+python split_data.py
+----------------------------------------------------------
+
+Step 3 : Upload data to S3
+aws s3 cp . s3://your-s3-bucket-name/ --recursive
+
+step 3 - 2 : Upload multiple files
+aws s3 cp file1.csv s3://your-s3-bucket-name/file1.csv
+aws s3 cp file2.csv s3://your-s3-bucket-name/file2.csv
+
+
+Step 4: Verify the upload
+aws s3 ls s3://your-s3-bucket-name/
+Check the Uploaded Files in S3:
+
+You can log in to the AWS Management Console, navigate to the S3 service, and browse 
+your bucket to verify that the files were uploaded successfully.
+List the Files Using AWS CLI:
+
+You can also list the contents of your S3 bucket using AWS CLI:
+
+
+Upload iris_train.csv to the iris-train-data bucket.
+Upload iris_test.csv to the iris-test-data bucket.
+Set Permissions:
+
+Ensure that the IAM role or user has the necessary permissions to read from these S3 buckets.
+
+
+sudo yum install python
+
+
+
+Step 4: Writing the Model Training Code
+In the src/model.py, write the code for the machine learning model using scikit-learn:
+
+corrected script
+
+import boto3
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+
+def load_data_from_s3(bucket_name, file_name):
+    s3 = boto3.client('s3')
+    obj = s3.get_object(Bucket=bucket_name, Key=file_name)
+    return pd.read_csv(obj['Body'])
+
+def train_model(train_data):
+    X = train_data.drop(columns=['species'])
+    y = train_data['species']
+
+    model = RandomForestClassifier()
+    model.fit(X, y)
+
+    joblib.dump(model, 'model.pkl')
+
+if __name__ == "__main__":
+    # Corrected bucket name and file path
+    bucket_name = 'ml-iris-project-data'
+    file_name = 'data/iris_train.csv'
+    
+    train_data = load_data_from_s3(bucket_name, file_name)
+    train_model(train_data)
+
+
+
+
+
+Step 3: Creating the Dockerfile
+Create a Dockerfile to containerize the training script
+
+Create a requirements.txt file to manage dependencies into the ec2 instance
+
+to download docker file from s3 into ec2
+
+aws s3 cp s3://ml-iris-project-data/iris_train.csv  iris_train.csv
+
+sudo yum install docker -y
+docker --version
+
+
+1. Build the Docker image:
+
+docker build -t iris-model:latest .
+sudo service docker start
+
+tep 3: Start the Docker Service
+bash
+Copy code
+sudo service docker start
+Step 4: Add Your User to the Docker Group (Optional)
+This allows you to run Docker commands without sudo.
+
+bash
+Copy code
+sudo usermod -a -G docker ec2-user
+
+sudo systemctl start docker
+sudo systemctl enable docker
+====== Run the Docker Command with sudo (Alternative Option)
+sudo docker build -t iris-model:latest .
+
+sudo docker build -t iris-model:latest .
+[+] Building 42.6s (9/9) FINISHED                                                                                                                                       docker:default
+ => [internal] load build definition 
+
+==Test the Docker Image Locally:
+== Run the Docker container locally:
+sudo docker run -p 5000:80 iris-model:latest
+
+==== Step 3: Push Docker Image to Amazon ECR
+Login to AWS CLI:
+
+Ensure AWS CLI is configured:
+aws configure
+
+correct one ===> aws ecr create-repository --repository-name ecr-iris-repo  --region us-west-2
+
+aws ecr create-repository --repository-name iris-api --region us-west-2
+==  First, create a repository in ECR:
+== aws ecr create-repository --repository-name ecr-iris-repo iris-model:latest --region us-west-2
+account id 730335461340
+
+== 1. Create the ECR Repository:
+This command is correct. It creates a new repository in Amazon ECR.
+
+bash
+Copy code
+aws ecr create-repository --repository-name ecr-iris-repo --region us-west-2
+
+== 2. Authenticate Docker to ECR:
+Before pushing images to ECR, you need to authenticate Docker with your ECR registry. This step is missing in your sequence and is essential to avoid the "no basic auth credentials" error.
+
+bash
+Copy code
+aws ecr get-login-password --region us-west-2 | sudo docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-west-2.amazonaws.com
+This command logs Docker into the ECR registry using your AWS credentials.
+
+== 3. Tag the Docker Image:
+Your tagging command is almost correct, but the repository name should match the one created in ECR (ecr-iris-repo), not iris-model.
+
+bash
+Copy code
+sudo docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+
+
+
+==  4. Push the Docker Image to ECR:
+After tagging the image correctly, push it to the ECR repository.
+
+bash
+Copy code
+sudo docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+
+
+
+== 2 . Tag and push the image to Amazon ECR (Elastic Container Registry):
+
+aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-east-2.amazonaws.com
+
+AWS account id is 730335461340
+
+docker tag iris-model:latest 730335461340.dkr.ecr.us-east-2.amazonaws.com/iris-model:latest
+
+docker push public.ecr.aws/i7w0w0k2/iris-model:latest
+ 
+ 
+ ==FINAL VERIFICATION 
+ aws ecr describe-images --repository-name ecr-iris-repo --region us-west-2
+{
+    "imageDetails": [
+        {
+            "registryId": "730335461340",
+            "repositoryName": "ecr-iris-repo",
+            "imageDigest": "sha256:7f4295c2fbe1f6440269ac1ec7c6e8033f2f6b9d5c05feac180e9129a9ffe380",
+            "imageTags": [
+                "latest"
+            ],
+            "imageSizeInBytes": 246314065,
+            "imagePushedAt": "2024-08-19T09:51:30+00:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json"
+        }
+    ]
+}
+
+
+
+------------
+In the project root, create deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: iris-api
+  template:
+    metadata:
+      labels:
+        app: iris-api
+    spec:
+      containers:
+      - name: iris-api
+        image: 730335461340.dkr.ecr.us-west-2.amazonaws.com/iris-model:latest
+        ports:
+        - containerPort: 80
+
+In the project root, create service.yaml:
+
+yaml
+Copy code
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-api-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: iris-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+	  
+	  1. Install kubectl:
+Depending on your operating system, use one of the following methods to install kubectl
+	  
+	curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+
+----------------
+
+
+Amazon EKS
+creagte new VPC
+select VPC and more
+in the auto generate specifiy like this EKS-IRIS-Cluster
+
+private subnet make it 0
+select no endpoints
+
+click on create VPC
+
+
+-------------------------------------------------------------------------------------
+Master node 
+run the below 
+kubectl get nodes
+
+mkdir -p $HOME/.kube
+export KUBECONFIG=/etc/kubernetes/admin.conf
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+create kubernetes cluster repository
+# This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+Install kubelet, kubeadm and kubectl:
+
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+(Optional) Enable the kubelet service before running kubeadm:
+
+sudo systemctl enable --now kubelet
+-----------------------------------
+to check if the repository got created 
+yum repolist
+----------------------------------------------------------
+
+In the Node 1, 
+repeat the above master instance commands 
+but first install dockuer 
+yum install -y
+systemctl start docker
+systemctl status docker
+
+------------------
+
+
+ip addr show
+Default Port Number:
+
+The default port number for Kubernetes API server is 6443.
+
+
+
+To generate a new token:
+sudo kubeadm token create --print-join-command
+
+
+kubeadm join <master-node-ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+
+kubeadm join 172.31.41.216:6443 --token dnsy4g.c3q12tp7gske7lfy --discovery-token-ca-cert-hash sha256:ccdbf6bec0e36cf59dc5bb5e8404ecd654fefe6de795c7ff0e6562db7a13f3b0 
+
+
+
+
+sudo kubeadm token list
+
+-------------------------
+VERSION=1.31
+sudo curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/CentOS_7/devel:kubic:libcontainers:stable.repo
+
+VERSION=1.31
+sudo curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:${VERSION}/CentOS_7/devel:kubic:libcontainers:stable:cri-o:${VERSION}.repo
+
+ sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
+crictl
+[root@ip-172-31-37-199 ~]# ls
+crictl-v1.31.0-linux-amd64.tar.gz
+[root@ip-172-31-37-199 ~]# tar -zxvf crictl-v1.31.0-linux-amd64.tar.gz
+crictl
+[root@ip-172-31-37-199 ~]# sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+Loaded plugins: priorities, update-motd, versionlock
+
+
+
+solutoin
+
+VERSION="v1.31.0"
+wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-amd64.tar.gz
+once the tar file get downloaded , untar it usingthis command
+
+ tar -zxvf crictl-v1.31.0-linux-amd64.tar.gz
+
+
+[root@ip-172-31-37-199 ~]# sudo mv crictl /usr/local/bin/
+[root@ip-172-31-37-199 ~]# crictl --version
+crictl version v1.31.0
+[root@ip-172-31-37-199 ~]# 
+
+
+
+
+
+
+
+Install kubelet, kubeadm and kubectl:
+
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+(Optional) Enable the kubelet service before running kubeadm:
+
+sudo systemctl enable --now kubelet
+
+
+====================================
+Step 5: Deploying on Kubernetes
+a. Create Kubernetes Deployment.yaml and Service Files:
+
+b. Kubernetes Service Configuration
+Create a Kubernetes service file service.yaml:
+
+In deployment.yaml:
+
+Deploy to Kubernetes:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Refer Eks Cluster Creation file 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Log in to the AWS Management Console:
+
+Go to the EKS Dashboard.
+Create a New EKS Cluster:
+
+Click on "Create cluster".
+Cluster name: Enter a name for your cluster (e.g., my-cluster).
+Kubernetes version: Choose the Kubernetes version you want to use.
+Cluster Service Role: Create a new IAM role with the necessary permissions, or choose an existing one.
+Networking: Select the VPC, subnets, and security groups. If you don’t have a VPC configured for EKS, the console can create one for you.
+Logging: Enable or disable logging as needed.
+Click "Create" to create the cluster.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 3: Configure kubectl to Connect to Your EKS Cluster
+Update kubeconfig:
+
+Use the AWS CLI to update your kubeconfig file so that you can connect to your EKS cluster with kubectl.
+
+aws eks --region us-east-2 update-kubeconfig --name eks-iris-cluster
+Replace <your-region> with your AWS region (e.g., us-east-2) and <your-cluster-name> with your EKS cluster name.
+Verify the Connection:
+
+Run the following command to check if kubectl is connected to your cluster:
+
+kubectl get svc
+
+You should see the Kubernetes services running in your cluster.
+
+
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+------------------------------------------------------------------------------------------------------------
+
+Step 6: 
+
+Verify the deployment:
+
+kubectl get pods
+kubectl get svc
+
+
+
+
+aws s3 cp s3://ml-iris-project-data/Dockerfile Dockerfile
+aws s3 cp s3://ml-iris-project-data/src/model.py model.py
+docker build -t iris-model:latest .
+
+
+sudo service docker start
+Redirecting to /bin/systemctl start docker.service
+[ec2-user@ip-172-31-41-216 ~]$ sudo service docker status
+
+sudo service docker status
+docker --version
+
+aws eks --region us-east-2 update-kubeconfig --name iris-cluster
+
+https://0023602DB35FA6EA054D9841FC9F5206.gr7.us-east-2.eks.amazonaws.com
+
+
+aws iam list-attached-user-policies --user-name Dev2
+
+docker tag iris-model:latest 730335461340.dkr.ecr.us-east-1.amazonaws.com/iris-model:latest
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-east-1.amazonaws.com
+
+
+# Push the image
+docker push 730335461340.dkr.ecr.us-east-1.amazonaws.com/iris-model:latest
+ docker push public.ecr.aws/i7w0w0k2/iris-model.dkr.ecr.us-east-1.amazonaws.com/iris-model:latest
+ docker push public.ecr.aws/i7w0w0k2/iris-model.dkr.ecr.us-east-1.amazonaws.com/iris-model:latest
+ 
+ 
+ 
+ ----------------------
+ aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-east-2.amazonaws.com
+ 
+  aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-east-2.amazonaws.com
+WARNING! Your password will be stored unencrypted in /home/ec2-user/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+----------------------
+ 
+ 
+ 
+docker tag iris-model:latest 730335461340.dkr.ecr.us-east-2.amazonaws.com/iris-model:latest
+
+
+docker push 730335461340.dkr.ecr.us-east-2.amazonaws.com/iris-model:latest
+
+--> this command not working --- docker push public.ecr.aws/i7w0w0k2/iris-model
+
+
+[ec2-user@ip-172-31-41-216 ~]$ aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+WARNING! Your password will be stored unencrypted in /home/ec2-user/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[ec2-user@ip-172-31-41-216 ~]$ docker push public.ecr.aws/i7w0w0k2/iris-model:latest
+The push refers to repository [public.ecr.aws/i7w0w0k2/iris-model]
+f6397f03ec1b: Pushed
+edbcd4717c0d: Pushed
+ec8450d01ccf: Pushed
+ea3ca52555d9: Pushed
+c051c8ddf0e4: Pushed
+3fd23da07c85: Pushed
+d459f4cb7e83: Pushed
+9853575bc4f9: Pushed
+latest: digest: sha256:f8dc84834b5e06370a71483ab8eb1cd4e65991706674f91d5b33c0846f8da46c size: 1998
+
+ aws ecr-public describe-images --repository-name iris-model --region us-east-1
+
+
+=======
+
+
+
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
+sudo systemctl enable --now kubelet
+
+
+
+
+# This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
+sudo systemctl enable --now kubelet

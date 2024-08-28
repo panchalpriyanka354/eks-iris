@@ -1,0 +1,497 @@
+
+
+
+Containers
+
+Docker image -> Dockerfile 
+
+Docker Engine - creating , executing, and monitoring the containers 
+Docker HUB - Cloud based registry - (ACS -Amazon Cluster Serivce, Cluster registry) share and store the docker images 
+
+
+build a docker image , run a docker image and push to ACS registry (repository)
+
+
+
+VM - virtual /machines - Vmware or virtual box 
+
+3 guys
+
+u r renting an entire house 
+Each house fully continaed with kitchen, living room , bathroom and all the utilities that u need 
+each house need a land
+
+docken containers are somthign like reting rooms in a shared house
+docker is room 
+
+
+
+Loan balancing
+
+sharing the work - 3 papers given to a single person and ask him computer the total revenue, each page has almost 80 transactions
+
+3 hours
+
+2  papers and given to 3 people 
+1 hours
+
+
+3 applicatoins  3 computers
+
+a -> computer 1
+b -> computer 2
+
+30 minutes 
+c - > computer 3   still running
+
+
+
+
+
+ACS - Amazon container servcice
+EKS - Elastic Kubernetes Service
+
+kubeadm 
+kubectl - its a command line tool, 
+
+master node , worker node 1 , worker node 2 
+control plane , 
+
+
+-------------------------------------------------------
+
+Step 1 : Prepare your s3 buckets
+
+
+create s3 buckets
+### in windows, AWS CLI 
+aws configure 
+aws_access_key_id
+aws_secret_access_key
+region : us-east-1
+
+in your windows,  iris folder in d drive 
+cd iris 
+
+
+aws s3 cp . s3://ml-iris-demo-project-data/ --recursive
+
+install aws cli in your windows
+
+step 2 : ensure that the IAM role or ueer has the necessary permission to read data from the s3 buckets
+
+=== redhat linux - how to indstall python
+
+# sudo command is used for administrative tasks1
+
+sudo yum install python
+
+python --version
+
+Step 3 :  download the s3 bucket files in EC2 instance , home user 
+
+aws s3 cp s3://ml-iris-demo-project-data/data/iris_train.csv iris_train.csv
+
+steo 4a : install docker 
+sudo yum install docker -y
+sudo service docker start 
+sudo systemctl start docker
+
+step 4 b  : add your user to the docker group 
+sudo usermod -a -G docker ec2-user
+
+step 4 : Build the docker image 
+
+sudo docker build -t iris-model:latest . 
+FINISHED]
+
+Step 5: Test the docker image locally
+sudo docker run -p 5000:80 iris-model:latest
+
+
+step 6 : push docker image to Amazon ECR
+
+login to AWS CLI
+    (!) create ecr repository  
+	    aws ecr create-repository --repository-name ecr-iris-repo --region us-west-2
+		
+	login to ec2
+	
+	(2)	important step is authenticate dockers with your ECR registry 
+	  	aws ecr get-login-password --region us-west-2 | sudo docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-west-2.amazonaws.com
+		
+		Tip : u need to specirfy aws account id
+		
+		Delete Repository cmd
+		
+		aws ecr delete-repository --repository-name ecr-iris-repo1 --region us-west-2 --force
+		
+		
+
+ (3)  tag the dCoker image 
+   sudo docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+   
+   4 ) Push the Docker images to ECR
+   sudo docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+   
+   
+   aws ecr describe-images --repository-name ecr-iris-repo --region us-west-2
+   
+   
+   -- repository[] 
+  ====================================
+  create eks cluster using eksctl 
+  ====================================
+  3. Install the [eksctl]) command-line tool.
+
+
+```bash
+# for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
+ARCH=amd64
+PLATFORM=$(uname -s)_$ARCH
+
+curl -sLO "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+
+# (Optional) Verify checksum
+curl -sL "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
+
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+
+sudo mv /tmp/eksctl /usr/local/bin
+```
+
+Save the above script as `eksctl.sh` then run `chmod +x eksctl.sh` and `sudo sh eksctl.sh`
+
+**Step 2: Creating an EKS Cluster**
+
+1. Create a new Amazon EKS cluster using the `eksctl` command:
+
+```bash
+eksctl create cluster --name eks-dev-cluster44 --region us-east-1 --nodegroup-name my-nodegroup --node-type t2.small --nodes 3 --nodes-min 1 --nodes-max 5 --managed
+
+
+
+  
+   
+ ------------------------------------
+   
+ u need to create deployment.yaml and service.yaml  is cl sh
+
+==================================
+deployment.yaml
+-===============
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+        ports:
+        - containerPort: 80
+
+==========
+
+the below one try it from cl she
+
+
+sudo yum update -y
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version --client --output=yaml
+
+kubectl apply -f deployment.yaml
+kubectl get deployments
+kubectl get pods
+kubectl describe deployment my-app
+kubectl expose deployment my-app --type=LoadBalancer --port=80
+kubectl logs <pod-name>
+kubectl expose deployment my-app --type=LoadBalancer --port=80
+kubectl logs <pod-name>
+
+curl -X POST http://<external-ip-or-dns>/predict -H "Content-Type: application/json" -d '{"features": [5.1, 3.5, 1.4, 0.2]}'
+
+
+Run the following command:
+
+bash
+Copy code
+kubectl get services
+This command will display a list of services running in your Kubernetes cluster. Look for your service (e.g., my-app-service), and you should see an output similar to this:
+
+plaintext
+Copy code
+NAME             TYPE           CLUSTER-IP       EXTERNAL-IP       PORT(S)        AGE
+my-app-service   LoadBalancer   10.100.200.10    a1b2c3d4e5f6g7    80:30000/TCP   5m
+
+
+
+
+
+
+  kubectl apply -f service.yaml
+==============
+Create the LoadBalancer Service in AWS EKS
+Modify your service.yaml file:
+
+Ensure your service.yaml file is set up to create a LoadBalancer service. Here's a typical configuration:
+
+yaml
+Copy code
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+  labels:
+    app: my-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80          # External port
+      targetPort: 5000   # Port your Flask app is running on inside the container
+================================
+
+kubectl delete -f kubernetes/service.yaml
+
+
+
+
+
+
+=======================================================================================
+
+~]$ kubectl apply -f deployment.yaml
+deployment.apps/my-app created
+[cloudshell-user@ip-10-136-50-220 ~]$ kubectl get pods
+NAME                      READY   STATUS             RESTARTS      AGE
+my-app-678fd4ddb5-vknsg   0/1     CrashLoopBackOff   4 (63s ago)   3m12s
+my-app-678fd4ddb5-whxqd   0/1     CrashLoopBackOff   4 (68s ago)   3m12s
+
+
+[cloudshell-user@ip-10-136-50-220 ~]$ kubectl get deployments
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+my-app   0/2     2            0           3m25s
+[cloudshell-user@ip-10-136-50-220 ~]$ kubectl get services
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.100.0.1   <none>        443/TCP   38m
+=======================================================================================
+
+
+
+
+
+curl -X POST http://a302020b71c394e69a9e897b4a3005dc-1955792163.us-east-1.elb.amazonaws.com/predict -H "Content-Type: application/json" -d '{"features": [5.1, 3.5, 1.4, 0.2]}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+export PATH=$PATH:/usr/local/bin
+to reinstall kubectl
+
+chmod +x kubectl
+
+sudo mv kubectl /usr/local/bin/
+aws eks update-kubeconfig --name <cluster_name>
+
+
+
+kubectl version --client
+
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+ls -l ~/.kube/config
+
+[root@ip-10-0-16-184 ~]# kubectl
+
+
+
+aws eks update-kubeconfig --region us-east-1 --name EKS-IRIS-DN
+
+kubectl config use-context <context-name>
+
+
+aws eks --region us-east-1 update-kubeconfig --name EKS-IRIS-DN
+
+
+
+kubectl config view
+
+aws eks describe-cluster --name EKS-IRIS-DN --region us-east-1
+
+
+. Check Network Connectivity
+First, ensure that the machine you're using can reach the API server. You can test this using curl:
+
+bash
+Copy code
+curl -v https://7DC2765D9458B025668C9CA9AF8129A7.gr7.us-east-1.eks.amazonaws.com
+curl -v https://7DC2765D9458B025668C9CA9AF8129A7.gr7.us-east-1.eks.amazonaws.com
+curl -v https://<api-server-endpoint>
+
+=== eksctl installation
+
+curl -s --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/local/bin
+
+aws iam get-user --user-name Dev2
+{
+    "User": {
+        "Path": "/",
+        "UserName": "Dev2",
+        "UserId": "AIDA2UC3CX7OAXK4O6GVP",
+        "Arn": "arn:aws:iam::730335461340:user/Dev2",
+        "CreateDate": "2024-08-07T06:23:24+00:00",
+        "Tags": [
+            {
+                "Key": "AKIA2UC3CX7ON4KNN4YV",
+                "Value": "dev1 for scm"
+            }
+        ]
+    }
+	
+	
+aws iam list-groups-for-user --user-name Dev2
+{
+    "Groups": [
+        {
+            "Path": "/",
+            "GroupName": "eksctl",
+            "GroupId": "AGPA2UC3CX7ODHS6CLXBD",
+            "Arn": "arn:aws:iam::730335461340:group/eksctl",
+            "CreateDate": "2024-08-13T17:41:15+00:00"
+        }
+    ]
+}
+
+eksctl create iamidentitymapping --cluster EKS-IRIS-DN \ 
+    --region us-east-1 \
+    --arn arn:aws:iam::730335461340:user/Dev2 \
+    --group system:masters \
+    --no-duplicate-arns \
+    --username Dev2
+	
+	== corrected command
+	eksctl create iamidentitymapping --cluster EKS-IRIS-DN --region us-east-1 --arn arn:aws:iam::730335461340:user/Dev2 --group system:masters  --no-duplicate-arns --username Dev2
+	
+	eksctl create iamidentitymapping --cluster EKS-IRIS-DN --region us-east-1 --arn arn:aws:iam::730335461340:user/Dev2 --group system:masters  --no-duplicate-ars --username Dev2
+Error: getting list of API resources for raw REST client: the server has asked for the client to provide credentials
+
+
+
+
+ssh -i C:\Users\raja2\Downloads\eks-key-pair(1).ppk ec2-user@ec2-54-237-224-132.compute-1.amazonaws.com
+
+
+ec2-54-237-224-132.compute-1.amazonaws.com
+
+
+
+aws ec2 describe-instances --filters "Name=tag:eks:EKS-IRIS-DN,Values=EKS-IRIS-DN"
+
+
+aws ec2 describe-instances
+
+
+
+    "Reservations": [
+        {
+            "Groups": [],
+            "Instances": [
+                {
+                    "AmiLaunchIndex": 0,
+                    "ImageId": "ami-0147d3ab35a9e8c43",
+                    "InstanceId": "i-0868aa1c650c300ec",
+                    "InstanceType": "t3.medium",
+                    "LaunchTime": "2024-08-25T05:20:19+00:00",
+                    "Monitoring": {
+                        "State": "disabled"
+                    },
+                    "Placement": {
+                        "AvailabilityZone": "us-east-1b",
+                        "GroupName": "",
+                        "Tenancy": "default"
+                    },
+                    "PrivateDnsName": "ip-10-0-27-181.ec2.internal",
+                    "PrivateIpAddress": "10.0.27.181",
+                    "ProductCodes": [],
+                    "PublicDnsName": "ec2-54-237-224-132.compute-1.amazonaws.com",
+                    "PublicIpAddress": "54.237.224.132",
+                    "State": {
+                        "Code": 16,
+:},
+                            "Description": "aws-K8S-i-0868aa1c650c300ec",
+                            "Groups": [
+                                {
+                                    "GroupName": "eks-cluster-sg-EKS-IRIS-DN-1381197020",
+                                    "GroupId": "sg-00984828685c0b381"
+                                }
+								
+								
+								{
+                            "Key": "eks:nodegroup-name",
+                            "Value": "worker-node-1"
+                        },
+                        {
+                            "Key": "k8s.io/cluster-autoscaler/EKS-IRIS-DN",
+                            "Value": "owned"
+							
+							
+							
+							
+							
+							
+							
+							swapoff -a
+systemctl start crio
+systemctl start kubelet.service
+systemctl stop firewalld.service
+export KUBECONFIG=/etc/kubernetes/admin.conf( i have logged as rootuser)
+
+---------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+=================================================
+eksctl
