@@ -1,0 +1,45 @@
+Step 2: Create an EKS Cluster Using the AWS Management Console
+Log in to the AWS Management Console:
+
+Go to the EKS Dashboard.
+Create a New EKS Cluster:
+
+Click on "Create cluster".
+Cluster name: Enter a name for your cluster (e.g., my-cluster).
+Kubernetes version: Choose the Kubernetes version you want to use.
+Cluster Service Role: Create a new IAM role with the necessary permissions, or choose an existing one.
+Networking: Select the VPC, subnets, and security groups. If you don’t have a VPC configured for EKS, the console can create one for you.
+Logging: Enable or disable logging as needed.
+Click "Create" to create the cluster.
+
+
+
+
+
+Create Node Group:
+
+After creating the cluster, you'll need to add worker nodes.
+Go to the "Node Groups" tab and click on "Add Node Group".
+Node group name: Enter a name for your node group.
+Instance types: Choose the instance types for your nodes (e.g., t3.medium).
+Scaling configuration: Set the minimum, maximum, and desired size of the node group.
+Key pair: Select an existing key pair or create a new one for SSH access.
+Click "Create" to add the node group.
+
+
+
+Step 3: Configure kubectl to Connect to Your EKS Cluster
+Update kubeconfig:
+
+Use the AWS CLI to update your kubeconfig file so that you can connect to your EKS cluster with kubectl.
+bash
+Copy code
+aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
+Replace <your-region> with your AWS region (e.g., us-east-2) and <your-cluster-name> with your EKS cluster name.
+Verify the Connection:
+
+Run the following command to check if kubectl is connected to your cluster:
+bash
+Copy code
+kubectl get svc
+You should see the Kubernetes services running in your cluster.

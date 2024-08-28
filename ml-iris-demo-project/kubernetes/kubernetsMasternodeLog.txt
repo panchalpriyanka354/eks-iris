@@ -1,0 +1,377 @@
+[root@ip-172-31-41-216 ec2-user]# yum repolist
+repo id                                                            repo name
+amazonlinux                                                        Amazon Linux 2023 repository
+kernel-livepatch                                                   Amazon Linux 2023 Kernel Livepatch repository
+[root@ip-172-31-41-216 ec2-user]# # This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+[root@ip-172-31-41-216 ec2-user]# yum repolist
+repo id                                                            repo name
+amazonlinux                                                        Amazon Linux 2023 repository
+kernel-livepatch                                                   Amazon Linux 2023 Kernel Livepatch repository
+kubernetes                                                         Kubernetes
+[root@ip-172-31-41-216 ec2-user]# sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+Kubernetes                                                                                                                         31 kB/s | 6.5 kB     00:00    
+Dependencies resolved.
+==================================================================================================================================================================
+ Package                                      Architecture                 Version                                        Repository                         Size
+==================================================================================================================================================================
+Installing:
+ kubeadm                                      x86_64                       1.31.0-150500.1.1                              kubernetes                         11 M
+ kubectl                                      x86_64                       1.31.0-150500.1.1                              kubernetes                         11 M
+ kubelet                                      x86_64                       1.31.0-150500.1.1                              kubernetes                         15 M
+Installing dependencies:
+ conntrack-tools                              x86_64                       1.4.6-2.amzn2023.0.2                           amazonlinux                       208 k
+ cri-tools                                    x86_64                       1.31.1-150500.1.1                              kubernetes                        6.9 M
+ kubernetes-cni                               x86_64                       1.5.0-150500.2.1                               kubernetes                        7.1 M
+ libnetfilter_cthelper                        x86_64                       1.0.0-21.amzn2023.0.2                          amazonlinux                        24 k
+ libnetfilter_cttimeout                       x86_64                       1.0.0-19.amzn2023.0.2                          amazonlinux                        24 k
+ libnetfilter_queue                           x86_64                       1.0.5-2.amzn2023.0.2                           amazonlinux                        30 k
+ socat                                        x86_64                       1.7.4.2-1.amzn2023.0.2                         amazonlinux                       303 k
+
+Transaction Summary
+==================================================================================================================================================================
+Install  10 Packages
+
+Total download size: 51 M
+Installed size: 270 M
+Downloading Packages:
+(1/10): libnetfilter_cttimeout-1.0.0-19.amzn2023.0.2.x86_64.rpm                                                                   312 kB/s |  24 kB     00:00    
+(2/10): libnetfilter_cthelper-1.0.0-21.amzn2023.0.2.x86_64.rpm                                                                    287 kB/s |  24 kB     00:00    
+(3/10): conntrack-tools-1.4.6-2.amzn2023.0.2.x86_64.rpm                                                                           2.0 MB/s | 208 kB     00:00    
+(4/10): libnetfilter_queue-1.0.5-2.amzn2023.0.2.x86_64.rpm                                                                        1.1 MB/s |  30 kB     00:00    
+(5/10): socat-1.7.4.2-1.amzn2023.0.2.x86_64.rpm                                                                                   5.7 MB/s | 303 kB     00:00    
+(6/10): kubectl-1.31.0-150500.1.1.x86_64.rpm                                                                                       64 MB/s |  11 MB     00:00    
+(7/10): kubelet-1.31.0-150500.1.1.x86_64.rpm                                                                                       54 MB/s |  15 MB     00:00    
+(8/10): kubernetes-cni-1.5.0-150500.2.1.x86_64.rpm                                                                                 59 MB/s | 7.1 MB     00:00    
+(9/10): cri-tools-1.31.1-150500.1.1.x86_64.rpm                                                                                    4.9 MB/s | 6.9 MB     00:01    
+(10/10): kubeadm-1.31.0-150500.1.1.x86_64.rpm                                                                                     7.4 MB/s |  11 MB     00:01    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                              31 MB/s |  51 MB     00:01     
+Kubernetes                                                                                                                         21 kB/s | 1.7 kB     00:00    
+Importing GPG key 0x9A296436:
+ Userid     : "isv:kubernetes OBS Project <isv:kubernetes@build.opensuse.org>"
+ Fingerprint: DE15 B144 86CD 377B 9E87 6E1A 2346 54DA 9A29 6436
+ From       : https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                          1/1 
+  Installing       : kubernetes-cni-1.5.0-150500.2.1.x86_64                                                                                                  1/10 
+  Installing       : cri-tools-1.31.1-150500.1.1.x86_64                                                                                                      2/10 
+  Installing       : socat-1.7.4.2-1.amzn2023.0.2.x86_64                                                                                                     3/10 
+  Installing       : libnetfilter_queue-1.0.5-2.amzn2023.0.2.x86_64                                                                                          4/10 
+  Installing       : libnetfilter_cttimeout-1.0.0-19.amzn2023.0.2.x86_64                                                                                     5/10 
+  Installing       : libnetfilter_cthelper-1.0.0-21.amzn2023.0.2.x86_64                                                                                      6/10 
+  Installing       : conntrack-tools-1.4.6-2.amzn2023.0.2.x86_64                                                                                             7/10 
+  Running scriptlet: conntrack-tools-1.4.6-2.amzn2023.0.2.x86_64                                                                                             7/10 
+  Installing       : kubelet-1.31.0-150500.1.1.x86_64                                                                                                        8/10 
+  Running scriptlet: kubelet-1.31.0-150500.1.1.x86_64                                                                                                        8/10 
+  Installing       : kubeadm-1.31.0-150500.1.1.x86_64                                                                                                        9/10 
+  Installing       : kubectl-1.31.0-150500.1.1.x86_64                                                                                                       10/10 
+  Running scriptlet: kubectl-1.31.0-150500.1.1.x86_64                                                                                                       10/10 
+  Verifying        : conntrack-tools-1.4.6-2.amzn2023.0.2.x86_64                                                                                             1/10 
+  Verifying        : libnetfilter_cthelper-1.0.0-21.amzn2023.0.2.x86_64                                                                                      2/10 
+  Verifying        : libnetfilter_cttimeout-1.0.0-19.amzn2023.0.2.x86_64                                                                                     3/10 
+  Verifying        : libnetfilter_queue-1.0.5-2.amzn2023.0.2.x86_64                                                                                          4/10 
+  Verifying        : socat-1.7.4.2-1.amzn2023.0.2.x86_64                                                                                                     5/10 
+  Verifying        : cri-tools-1.31.1-150500.1.1.x86_64                                                                                                      6/10 
+  Verifying        : kubeadm-1.31.0-150500.1.1.x86_64                                                                                                        7/10 
+  Verifying        : kubectl-1.31.0-150500.1.1.x86_64                                                                                                        8/10 
+  Verifying        : kubelet-1.31.0-150500.1.1.x86_64                                                                                                        9/10 
+  Verifying        : kubernetes-cni-1.5.0-150500.2.1.x86_64                                                                                                 10/10 
+
+Installed:
+  conntrack-tools-1.4.6-2.amzn2023.0.2.x86_64           cri-tools-1.31.1-150500.1.1.x86_64                     kubeadm-1.31.0-150500.1.1.x86_64                 
+  kubectl-1.31.0-150500.1.1.x86_64                      kubelet-1.31.0-150500.1.1.x86_64                       kubernetes-cni-1.5.0-150500.2.1.x86_64           
+  libnetfilter_cthelper-1.0.0-21.amzn2023.0.2.x86_64    libnetfilter_cttimeout-1.0.0-19.amzn2023.0.2.x86_64    libnetfilter_queue-1.0.5-2.amzn2023.0.2.x86_64   
+  socat-1.7.4.2-1.amzn2023.0.2.x86_64                  
+
+Complete!
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl enable --now kubelet
+Created symlink /etc/systemd/system/multi-user.target.wants/kubelet.service → /usr/lib/systemd/system/kubelet.service.
+[root@ip-172-31-41-216 ec2-user]# yum repolist
+repo id                                                            repo name
+amazonlinux                                                        Amazon Linux 2023 repository
+kernel-livepatch                                                   Amazon Linux 2023 Kernel Livepatch repository
+kubernetes                                                         Kubernetes
+[root@ip-172-31-41-216 ec2-user]# sudo repolist
+sudo: repolist: command not found
+[root@ip-172-31-41-216 ec2-user]# yum repolist
+repo id                                                            repo name
+amazonlinux                                                        Amazon Linux 2023 repository
+kernel-livepatch                                                   Amazon Linux 2023 Kernel Livepatch repository
+kubernetes                                                         Kubernetes
+[root@ip-172-31-41-216 ec2-user]# cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+[root@ip-172-31-41-216 ec2-user]# sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+Kubernetes                                                                                                                         11 kB/s | 1.7 kB     00:00    
+Package kubelet-1.31.0-150500.1.1.x86_64 is already installed.
+Package kubeadm-1.31.0-150500.1.1.x86_64 is already installed.
+Package kubectl-1.31.0-150500.1.1.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+[root@ip-172-31-41-216 ec2-user]# sudo systemctl enable --now kubelet
+[root@ip-172-31-41-216 ec2-user]# yum repolist
+repo id                                                            repo name
+amazonlinux                                                        Amazon Linux 2023 repository
+kernel-livepatch                                                   Amazon Linux 2023 Kernel Livepatch repository
+kubernetes                                                         Kubernetes
+[root@ip-172-31-41-216 ec2-user]# kubeadm init
+[init] Using Kubernetes version: v1.31.0
+[preflight] Running pre-flight checks
+        [WARNING FileExisting-tc]: tc not found in system path
+error execution phase preflight: [preflight] Some fatal errors occurred:
+        [ERROR NumCPU]: the number of available CPUs 1 is less than the required 2
+        [ERROR Mem]: the system RAM (949 MB) is less than the minimum 1700 MB
+[preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+To see the stack trace of this error execute with --v=5 or higher
+
+Solution for tghe above error - kubeadm init
+-------------------------------------------
+sudo kubeadm init --ignore-preflight-errors=all
+
+
+
+solution -  for connection refused 
+------------
+ sudo kubeadm init --ignore-preflight-errors=all
+   u will find this after a while Your Kubernetes control-plane has initialized successfully!
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+ 
+ kubectl get nodes   # now this command worked 
+
+NAME                                          STATUS     ROLES           AGE   VERSION
+ip-172-31-35-139.us-east-2.compute.internal   NotReady   <none>          10m   v1.31.0
+ip-172-31-41-216.us-east-2.compute.internal   NotReady   control-plane   13m   v1.31.0
+[root@ip-172-31-41-216 ec2-user]# 
+
+------------------
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 172.31.41.216:6443 --token k0pgcp.e2y5fdtsrck2yagh \
+        --discovery-token-ca-cert-hash sha256:28030b3c2d3c5e6b318adfb1614bdec3436ef3b2eb525a9c6cda35eb41d71324 
+[root@ip-172-31-41-216 ec2-user]# kubectl get nodes
+NAME                                          STATUS     ROLES           AGE   VERSION
+ip-172-31-41-216.us-east-2.compute.internal   NotReady   control-plane   69s   v1.31.0
+
+
+
+--------------------------------]]
+
+Node 1 Logs
+--------------------------
+
+Last login: Sun Aug 18 07:21:56 2024 from ec2-3-16-146-5.us-east-2.compute.amazonaws.com
+   ,     #_
+   ~\_  ####_        Amazon Linux 2
+  ~~  \_#####\
+  ~~     \###|       AL2 End of Life is 2025-06-30.
+  ~~       \#/ ___
+   ~~       V~' '->
+    ~~~         /    A newer version of Amazon Linux is available!
+      ~~._.   _/
+         _/ _/       Amazon Linux 2023, GA and supported until 2028-03-15.
+       _/m/'           https://aws.amazon.com/linux/amazon-linux-2023/
+
+5 package(s) needed for security, out of 8 available
+Run "sudo yum update" to apply all updates.
+[root@ip-172-31-23-150 ~]# yum install docker -y
+Loaded plugins: priorities, update-motd, versionlock
+amzn2-core                                                                                                                                 | 3.6 kB  00:00:00     
+Resolving Dependencies
+--> Running transaction check
+---> Package docker.x86_64 0:25.0.6-1.amzn2.0.1 will be installed
+--> Processing Dependency: libcgroup >= 0.40.rc1-5.15 for package: docker-25.0.6-1.amzn2.0.1.x86_64
+--> Running transaction check
+---> Package libcgroup.x86_64 0:0.41-21.amzn2 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+==================================================================================================================================================================
+ Package                            Arch                            Version                                      Repository                                  Size
+==================================================================================================================================================================
+Installing:
+ docker                             x86_64                          25.0.6-1.amzn2.0.1                           amzn2extra-docker                           45 M
+Installing for dependencies:
+ libcgroup                          x86_64                          0.41-21.amzn2                                amzn2-core                                  66 k
+
+Transaction Summary
+==================================================================================================================================================================
+Install  1 Package (+1 Dependent package)
+
+Total download size: 45 M
+Installed size: 169 M
+Downloading packages:
+(1/2): libcgroup-0.41-21.amzn2.x86_64.rpm                                                                                                  |  66 kB  00:00:00     
+(2/2): docker-25.0.6-1.amzn2.0.1.x86_64.rpm                                                                                                |  45 MB  00:00:00     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                              61 MB/s |  45 MB  00:00:00     
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : libcgroup-0.41-21.amzn2.x86_64                                                                                                                 1/2 
+  Installing : docker-25.0.6-1.amzn2.0.1.x86_64                                                                                                               2/2 
+  Verifying  : docker-25.0.6-1.amzn2.0.1.x86_64                                                                                                               1/2 
+  Verifying  : libcgroup-0.41-21.amzn2.x86_64                                                                                                                 2/2 
+
+Installed:
+  docker.x86_64 0:25.0.6-1.amzn2.0.1                                                                                                                              
+
+Dependency Installed:
+  libcgroup.x86_64 0:0.41-21.amzn2                                                                                                                                
+
+Complete!
+[root@ip-172-31-23-150 ~]# systemctl start docker
+[root@ip-172-31-23-150 ~]# systemctl status  docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
+   Active: active (running) since Sun 2024-08-18 07:46:09 UTC; 8s ago
+     Docs: https://docs.docker.com
+  Process: 42122 ExecStartPre=/usr/libexec/docker/docker-setup-runtimes.sh (code=exited, status=0/SUCCESS)
+  Process: 42119 ExecStartPre=/bin/mkdir -p /run/docker (code=exited, status=0/SUCCESS)
+ Main PID: 42125 (dockerd)
+    Tasks: 9
+   Memory: 28.7M
+   CGroup: /system.slice/docker.service
+           └─42125 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --default-ulimit nofile=32768:65536
+
+Aug 18 07:46:08 ip-172-31-23-150.us-east-2.compute.internal systemd[1]: Starting Docker Application Container Engine...
+Aug 18 07:46:08 ip-172-31-23-150.us-east-2.compute.internal dockerd[42125]: time="2024-08-18T07:46:08.409603717Z" level=info msg="Starting up"
+Aug 18 07:46:09 ip-172-31-23-150.us-east-2.compute.internal dockerd[42125]: time="2024-08-18T07:46:09.109348538Z" level=info msg="Loading containers: start."
+Aug 18 07:46:09 ip-172-31-23-150.us-east-2.compute.internal dockerd[42125]: time="2024-08-18T07:46:09.256538781Z" level=info msg="Loading containers: done."
+Aug 18 07:46:09 ip-172-31-23-150.us-east-2.compute.internal dockerd[42125]: time="2024-08-18T07:46:09.270446333Z" level=info msg="Docker daemon" commit=b...25.0.6
+Aug 18 07:46:09 ip-172-31-23-150.us-east-2.compute.internal dockerd[42125]: time="2024-08-18T07:46:09.270562797Z" level=info msg="Daemon has completed in...ation"
+Aug 18 07:46:09 ip-172-31-23-150.us-east-2.compute.internal dockerd[42125]: time="2024-08-18T07:46:09.310562798Z" level=info msg="API listen on /run/docker.sock"
+Aug 18 07:46:09 ip-172-31-23-150.us-east-2.compute.internal systemd[1]: Started Docker Application Container Engine.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@ip-172-31-23-150 ~]# cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+> [kubernetes]
+> name=Kubernetes
+> baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+> enabled=1
+> gpgcheck=1
+> gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+> exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+> EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+[root@ip-172-31-23-150 ~]# yum repolist
+Loaded plugins: priorities, update-motd, versionlock
+amzn2-core                                                                                                                                 | 3.6 kB  00:00:00     
+kubernetes                                                                                                                                 | 1.7 kB  00:00:00     
+kubernetes/primary                                                                                                                         | 4.3 kB  00:00:00     
+kubernetes                                                                                                                                                  30/30
+repo id                                                                   repo name                                                                     status
+amzn2-core/2/x86_64                                                       Amazon Linux 2 core repository                                                35,292+393
+amzn2extra-docker/2/x86_64                                                Amazon Extras repo for docker                                                      72+43
+amzn2extra-kernel-5.10/2/x86_64                                           Amazon Extras repo for kernel-5.10                                               389+189
+kubernetes                                                                Kubernetes                                                                          0+30
+repolist: 35,753
+[root@ip-172-31-23-150 ~]# sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+Loaded plugins: priorities, update-motd, versionlock
+2 packages excluded due to repository priority protections
+Resolving Dependencies
+--> Running transaction check
+---> Package kubeadm.x86_64 0:1.31.0-150500.1.1 will be installed
+--> Processing Dependency: cri-tools >= 1.30.0 for package: kubeadm-1.31.0-150500.1.1.x86_64
+---> Package kubectl.x86_64 0:1.31.0-150500.1.1 will be installed
+---> Package kubelet.x86_64 0:1.31.0-150500.1.1 will be installed
+--> Processing Dependency: kubernetes-cni >= 1.2.0 for package: kubelet-1.31.0-150500.1.1.x86_64
+--> Processing Dependency: ebtables for package: kubelet-1.31.0-150500.1.1.x86_64
+--> Running transaction check
+---> Package ebtables.x86_64 0:2.0.10-16.amzn2.0.1 will be installed
+---> Package kubeadm.x86_64 0:1.31.0-150500.1.1 will be installed
+--> Processing Dependency: cri-tools >= 1.30.0 for package: kubeadm-1.31.0-150500.1.1.x86_64
+---> Package kubernetes-cni.x86_64 0:1.5.0-150500.2.1 will be installed
+--> Finished Dependency Resolution
+Error: Package: kubeadm-1.31.0-150500.1.1.x86_64 (kubernetes)
+           Requires: cri-tools >= 1.30.0
+           Installed: cri-tools-1.29.0-1.amzn2.0.2.x86_64 (@amzn2-core)
+               cri-tools = 1.29.0-1.amzn2.0.2
+           Available: cri-tools-1.25.0-1.amzn2.0.1.x86_64 (amzn2-core)
+               cri-tools = 1.25.0-1.amzn2.0.1
+           Available: cri-tools-1.26.1-1.amzn2.0.1.x86_64 (amzn2-core)
+               cri-tools = 1.26.1-1.amzn2.0.1
+           Available: cri-tools-1.26.1-1.amzn2.0.2.x86_64 (amzn2-core)
+               cri-tools = 1.26.1-1.amzn2.0.2
+           Available: cri-tools-1.26.1-1.amzn2.0.3.x86_64 (amzn2-core)
+               cri-tools = 1.26.1-1.amzn2.0.3
+           Available: cri-tools-1.29.0-1.amzn2.0.1.x86_64 (amzn2-core)
+               cri-tools = 1.29.0-1.amzn2.0.1
+ You could try using --skip-broken to work around the problem
+ You could try running: rpm -Va --nofiles --nodigest
+[root@ip-172-31-23-150 ~]# sudo systemctl enable --now kubelet
+[root@ip-172-31-23-150 ~]# yum repolist
+Loaded plugins: priorities, update-motd, versionlock
+repo id                                                                   repo name                                                                     status
+amzn2-core/2/x86_64                                                       Amazon Linux 2 core repository                                                35,292+393
+amzn2extra-docker/2/x86_64                                                Amazon Extras repo for docker                                                      72+43
+amzn2extra-kernel-5.10/2/x86_64                                           Amazon Extras repo for kernel-5.10                                               389+189
+kubernetes                                                                Kubernetes                                                                          0+30
+repolist: 35,753
+[root@ip-172-31-23-150 ~]# sudo systemctl enable --now kubelet
+[root@ip-172-31-23-150 ~]# 
+[root@ip-172-31-23-150 ~]# kubeadm join 172.31
