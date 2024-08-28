@@ -1,18 +1,29 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      docker: 20
+    commands:
+      - echo Installing dependencies...
+      - pip install -r src/requirements.txt
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-west-2.amazonaws.com
-  build:
-    commands:
-      - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t iris-model:latest .
-      - docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+      - echo Tagging the Docker image...
+      - docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/iris-model:latest
+  build:
+    commands:
+      - echo Pushing the Docker image to Amazon ECR...
+      - docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/iris-model:latest
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+      # Optionally, you can include steps to deploy the image or update configurations here.
+
+artifacts:
+  files:
+    - '**/*'
