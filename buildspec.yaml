@@ -8,6 +8,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
+      - aws ecr create-repository --repository-name ecr-iris-repo --region us-west-2
       - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-west-2.amazonaws.com
       - echo Building the Docker image...
       - docker build -t iris-model:latest .
