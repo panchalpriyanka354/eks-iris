@@ -5,8 +5,8 @@ phases:
     commands:
       - docker info
       - echo Installing dependencies...
-      - yum install docker -y
-      - pip install -r src/requirements.txt
+      runtime-versions:
+      docker: 25
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
