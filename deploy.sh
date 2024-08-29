@@ -5,8 +5,8 @@ set -e
 
 # Define variables
 NAMESPACE="default"  # Kubernetes namespace (adjust if needed)
-DEPLOYMENT_FILE="kubernetes/deployment.yaml"
-SERVICE_FILE="kubernetes/service.yaml"
+DEPLOYMENT_FILE="deployment.yaml"
+SERVICE_FILE="service.yaml"
 LOG_FILE="/tmp/deploy.log"
 
 # Start logging
