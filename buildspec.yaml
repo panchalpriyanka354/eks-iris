@@ -3,23 +3,31 @@ version: 0.2
 phases:
   install:
     commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - echo Installing dependencies...
       - pip install -r src/requirements.txt
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-west-2.amazonaws.com
+      - aws --version
+      - AWS_DEFAULT_REGION=us-east-1
+      - echo $AWS_DEFAULT_REGION
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ***********.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=730335461340.dkr.ecr.us-east-1.amazonaws.com/cicd
+   
+  build:
+    commands:
       - echo Building the Docker image...
       - docker build -t iris-model:latest .
       - echo Tagging the Docker image...
-      - docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/iris-model:latest
-  build:
-    commands:
-      - echo Pushing the Docker image to Amazon ECR...
-      - docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/iris-model:latest
+      - docker tag iris-model:latest 730335461340.dkr.ecr.us-west-2.amazonaws.com/iris-model:latest      
   post_build:
     commands:
       - echo Build completed on `date`
+      - echo pushing the docker image
+      - echo Pushing the Docker image to Amazon ECR...
+      - docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/iris-model:latest
       # Optionally, you can include steps to deploy the image or update configurations here.
 
 artifacts:
