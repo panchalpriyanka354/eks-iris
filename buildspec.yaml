@@ -10,6 +10,7 @@ phases:
       - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/kubectl
+      - kubectl cluster-info
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
@@ -33,7 +34,6 @@ phases:
       - docker push 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       - echo Deploying to Kubernetes...
       - kubectl config view
-      - kubectl cluster-info
       - kubectl apply -f deployment.yaml
       - kubectl apply -f service.yaml
       - echo Deployment completed on `date`
