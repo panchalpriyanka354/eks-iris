@@ -1,11 +1,6 @@
 version: 0.2
 
 phases:
-    commands:
-      - echo "Checking Docker installation..."
-      - docker info
-      - echo "Installing dependencies..."
-      - pip install -r requirements.txt
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
