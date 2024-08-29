@@ -32,6 +32,8 @@ phases:
       - echo "Pushing the Docker image to Amazon ECR..."
       - docker push 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       - echo Deploying to Kubernetes...
+      - kubectl config view
+      - kubectl cluster-info
       - kubectl apply -f deployment.yaml
       - kubectl apply -f service.yaml
       - echo Deployment completed on `date`
