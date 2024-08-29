@@ -3,8 +3,6 @@ version: 0.2
 phases:
   install:
     commands:
-      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
-      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - docker info
       - echo Installing dependencies...
       - pip install -r src/requirements.txt
@@ -15,13 +13,12 @@ phases:
       - AWS_DEFAULT_REGION=us-east-1
       - echo $AWS_DEFAULT_REGION
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 730335461340.dkr.ecr.us-east-1.amazonaws.com
-      - REPOSITORY_URI=730335461340.dkr.ecr.us-east-1.amazonaws.com/cicd
-   
+      - REPOSITORY_URI=730335461340.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
       - echo Building the Docker image...
       - echo Build started on `date`
-      - echo Building the Docker image...          
+      - echo Building the Docker image...           
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:latest	    
   post_build:
