@@ -2,7 +2,6 @@ version: 0.2
 
 phases:
   install:
-    commands:
       runtime-versions:
       docker: 25
   pre_build:
