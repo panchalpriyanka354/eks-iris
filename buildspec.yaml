@@ -22,8 +22,7 @@ phases:
     commands:
       - echo "Build completed on `date`"
       - echo "Pushing the Docker image to Amazon ECR..."
-      - docker push $REPOSITORY_URI:latest
-
+      - docker push 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
 artifacts:
   files:
     - '**/*'
