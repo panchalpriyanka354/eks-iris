@@ -7,6 +7,7 @@ phases:
       - aws --version
       - AWS_DEFAULT_REGION=us-east-1
       - echo $AWS_DEFAULT_REGION
+      - REPOSITORY_URI=730335461340.dkr.ecr.us-east-1.amazonaws.com/iris-ecr-repo
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
 
   build:
