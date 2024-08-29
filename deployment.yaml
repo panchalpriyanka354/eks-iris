@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app555
+  labels:
+    app: my-app555
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app555
+  template:
+    metadata:
+      labels:
+        app: my-app555
+    spec:
+      containers:
+      - name: my-app555-container
+        image: 730335461340.dkr.ecr.us-west-2.amazonaws.com/ecr-iris-repo:latest
+        ports:
+        - containerPort: 80
