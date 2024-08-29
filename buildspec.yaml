@@ -5,6 +5,7 @@ phases:
     commands:
       - docker info
       - echo Installing dependencies...
+      - yum install docker -y
       - pip install -r src/requirements.txt
   pre_build:
     commands:
