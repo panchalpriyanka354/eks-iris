@@ -31,6 +31,11 @@ phases:
       - echo "Build completed on `date`"
       - echo "Pushing the Docker image to Amazon ECR..."
       -  docker push 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
+      - echo Deploying to Kubernetes...
+      - kubectl apply -f kubernetes/deployment.yaml
+      - kubectl apply -f kubernetes/service.yaml
+      - echo Deployment completed on `date`
+      
 artifacts:
   files:
     - '**/*'
