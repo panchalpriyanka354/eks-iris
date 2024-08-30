@@ -16,6 +16,7 @@ phases:
     commands:
       - echo "Building the Docker image..."
       - docker build -t iris-model:latest .
+      - echo "Docker image got created successfuly"
       - echo "Tagging the Docker image..."
       - docker tag iris-model:latest 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       
