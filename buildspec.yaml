@@ -13,6 +13,7 @@ phases:
       - CLUSTER_NAME=eks-dev-cluster666
       - REGION=us-east-1
       - aws eks update-kubeconfig --region $REGION --name $CLUSTER_NAME 
+      - export PATH=$PATH:/usr/local/bin
       - kubectl config current-context 
       - kubectl get nodes
   pre_build:
