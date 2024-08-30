@@ -10,7 +10,7 @@ phases:
       - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/kubectl
-      - aws eks update-kubeconfig --region us-east-1 --name your-eks-cluster-name  # Update kubeconfig   
+      - aws eks update-kubeconfig --region us-east-1 --name eks-dev-cluster666  # Update kubeconfig   
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
