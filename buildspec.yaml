@@ -12,6 +12,7 @@ phases:
       - mv ./kubectl /usr/local/bin/kubectl
       - aws eks update-kubeconfig --region us-east-1 --name eks-dev-cluster666  # Update kubeconfig   
       - kubectl config current-context 
+      - kubectl get nodes
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
