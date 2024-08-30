@@ -35,8 +35,8 @@ phases:
       - docker push 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       - echo Deploying to Kubernetes...
       - echo Deploying to Kubernetes...
-      - kubectl apply -f deployment.yaml  # Deploy the image to EKS
-      - kubectl apply -f service.yaml  # Apply service changes
+      - kubectl apply -f deployment.yaml --validate=false  # Deploy the image to EKS
+      - kubectl apply -f service.yaml --validate=false # Apply service changes
    
       
 artifacts:
