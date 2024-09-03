@@ -14,7 +14,7 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose port 5000 for Flask (used when running app.py)
-EXPOSE 5080
+EXPOSE 5000
 
 # Default command is to run the Flask app
 # You can override this with different commands when starting the container
