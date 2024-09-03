@@ -1,5 +1,6 @@
-# src/requirements.txt
 boto3
-pandas
-scikit-learn
-joblib
+flask==2.2.5           # Flask for creating the web server
+joblib==1.3.2          # For loading the saved model.pkl file
+scikit-learn==1.2.2    # If your model was trained using scikit-learn, ensure this is included
+pandas==1.5.3          # For handling and manipulating data in the predict endpoint
+gunicorn==21.2.0       # A WSGI HTTP Server for running Flask in production environments
