@@ -13,7 +13,7 @@ phases:
     build:
     commands:
       - echo "Building the Docker image..."
-	    - docker build -t ml-iris-app .
+      - docker build -t ml-iris-app .
       - echo "Docker image got created successfuly"
       - echo "Tagging the Docker image..."
       - docker tag ml-iris-app 545009869835.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
