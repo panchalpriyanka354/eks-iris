@@ -1,4 +1,3 @@
-## working copy of buildspec.yaml
 
 version: 0.2
 
@@ -9,23 +8,33 @@ phases:
       - aws --version
       - AWS_DEFAULT_REGION=us-east-1
       - echo $AWS_DEFAULT_REGION
-      - REPOSITORY_URI=730335461340.dkr.ecr.us-east-1.amazonaws.com/iris-ecr-repo
+      - REPOSITORY_URI=545009869835.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
     build:
     commands:
       - echo "Building the Docker image..."
-      - docker build -t iris-model:latest .
+	    - docker build -t ml-iris-app .
       - echo "Docker image got created successfuly"
       - echo "Tagging the Docker image..."
-      - docker tag iris-model:latest 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
+      - docker tag ml-iris-app 545009869835.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       
   post_build:
     commands:
       - echo "Build completed on `date`"
       - echo "Pushing the Docker image to Amazon ECR..."
-      - docker push 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
+      - docker push 545009869835.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       - echo " Deploy the docker image to Elastic Kubernetest "
-a
+      - docker run --rm -p 5000:5000 \
+        -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+        -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+        -e AWS_DEFAULT_REGION=us-east-1 \
+        ml-iris-app
+
+
 artifacts:
   files:
     - '**/*'
+env:
+  secrets-manager:
+    AWS_ACCESS_KEY_ID: "AKIAX5ZI6UQFQA44MQWM:AWS_ACCESS_KEY_ID"  # Use Secrets Manager to inject secrets
+    AWS_SECRET_ACCESS_KEY: "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:AWS_SECRET_ACCESS_KEY"
