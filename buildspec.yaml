@@ -30,11 +30,7 @@ phases:
         -e AWS_DEFAULT_REGION=us-east-1 \
         ml-iris-app
 
-
 artifacts:
   files:
     - '**/*'
-env:
-  secrets-manager:
-    AWS_ACCESS_KEY_ID: "AKIAX5ZI6UQFQA44MQWM:AWS_ACCESS_KEY_ID"  # Use Secrets Manager to inject secrets
-    AWS_SECRET_ACCESS_KEY: "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:AWS_SECRET_ACCESS_KEY"
+
