@@ -26,11 +26,8 @@ phases:
       - echo "Pushing the Docker image to Amazon ECR..."
       - docker push 545009869835.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       - echo "Deploy the Docker image to Elastic Kubernetes"
-      - docker run --rm -p 8080:5000 \
-        -e AWS_ACCESS_KEY_ID=AKIAX5ZI6UQFQA44MQWM \
-        -e AWS_SECRET_ACCESS_KEY=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 \
-        -e AWS_DEFAULT_REGION=us-east-1 \
-        ml-iris-app
+      - docker run --rm -p 8080:5000 -e AWS_ACCESS_KEY_ID=AKIAX5ZI6UQFQA44MQWM -e AWS_SECRET_ACCESS_KEY=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 \
+        -e AWS_DEFAULT_REGION=us-east-1 ml-iris-app
 
 artifacts:
   files:
