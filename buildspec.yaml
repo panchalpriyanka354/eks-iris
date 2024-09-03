@@ -30,7 +30,7 @@ phases:
         -e AWS_ACCESS_KEY_ID=AKIAX5ZI6UQFQA44MQWM \
         -e AWS_SECRET_ACCESS_KEY=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 \
         -e AWS_DEFAULT_REGION=us-east-1 \
-        ml-iris-app
+         ml-iris-app
 artifacts:
   files:
     - '**/*'
