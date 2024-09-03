@@ -5,11 +5,13 @@ from sklearn.metrics import accuracy_score, classification_report
 
 # S3 bucket details
 S3_BUCKET = 'ml-iris-demo-project-bucket'
+S3_MODEL_PATH = 'src/model.pkl'  # Adjust path if necessary
 S3_TEST_DATA_PATH = 'data/iris_test.csv'  # Ensure the test data file name is correct
+LOCAL_MODEL_PATH = 'model.pkl'
 LOCAL_TEST_DATA_PATH = 'iris_test.csv'
 
-def download_data_from_s3(bucket, s3_path, local_path):
-    """Downloads the test data file from the specified S3 bucket."""
+def download_file_from_s3(bucket, s3_path, local_path):
+    """Downloads a file from the specified S3 bucket."""
     s3 = boto3.client('s3')
     try:
         s3.download_file(bucket, s3_path, local_path)
@@ -18,9 +20,17 @@ def download_data_from_s3(bucket, s3_path, local_path):
         print(f"Error downloading {s3_path} from bucket {bucket}: {e}")
         raise
 
-# Load the test data from S3
+# Download the model from S3
 try:
-    download_data_from_s3(S3_BUCKET, S3_TEST_DATA_PATH, LOCAL_TEST_DATA_PATH)
+    download_file_from_s3(S3_BUCKET, S3_MODEL_PATH, LOCAL_MODEL_PATH)
+    print(f"Model loaded successfully from {LOCAL_MODEL_PATH}.")
+except Exception as e:
+    print(f"Failed to load model: {e}")
+    exit(1)
+
+# Download the test data from S3
+try:
+    download_file_from_s3(S3_BUCKET, S3_TEST_DATA_PATH, LOCAL_TEST_DATA_PATH)
     print(f"Test data loaded successfully from {LOCAL_TEST_DATA_PATH}.")
 except Exception as e:
     print(f"Failed to load test data: {e}")
@@ -28,7 +38,7 @@ except Exception as e:
 
 # Load the trained model
 try:
-    model = joblib.load('model.pkl')
+    model = joblib.load(LOCAL_MODEL_PATH)
     print("Model loaded successfully.")
 except Exception as e:
     print(f"Failed to load model: {e}")
