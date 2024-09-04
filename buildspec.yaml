@@ -26,6 +26,7 @@ phases:
       - echo "Pushing the Docker image to Amazon ECR..."
       - docker push 545009869835.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
       - echo "Deploy the Docker image to Elastic Kubernetes"
+      - echo "docker pusehd to ECR"
      
 artifacts:
   files:
