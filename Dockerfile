@@ -1,5 +1,5 @@
-# Base image
-FROM python:3.8-slim
+# Use AWS ECR public equivalent of python:3.8-slim as the base image
+FROM public.ecr.aws/lts/python:3.8-slim
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -17,5 +17,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Default command is to run the Flask app
-# You can override this with different commands when starting the container
 CMD ["python", "app.py"]
