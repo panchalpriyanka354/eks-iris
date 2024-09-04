@@ -1,5 +1,5 @@
-# Use a public AWS ECR image as the base image
-FROM public.ecr.aws/python/python:3.8-slim
+# Use a verified public AWS ECR image for Python 3.8-slim
+FROM public.ecr.aws/docker/library/python:3.8-slim
 
 # Set the working directory inside the container
 WORKDIR /app
