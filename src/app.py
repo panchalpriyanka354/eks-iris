@@ -7,7 +7,7 @@ import boto3
 app = Flask(__name__)
 
 # S3 bucket details
-S3_BUCKET = 'ml-iris-demo-project-bucket'
+S3_BUCKET = 'ml-iris-demo-project-new-bucket'
 S3_MODEL_PATH = 'src/model.pkl'
 LOCAL_MODEL_PATH = 'model.pkl'
 
