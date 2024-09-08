@@ -26,7 +26,7 @@ def train_model(train_data):
     print("Model training completed and saved as model.pkl.")
 
     # Upload the saved model to S3
-    upload_model_to_s3('model.pkl', 'ml-iris-demo-project-bucket', 'src/model.pkl')
+    upload_model_to_s3('model.pkl', 'ml-iris-demo-project-new-bucket', 'src/model.pkl')
 
 def upload_model_to_s3(file_name, bucket_name, object_name):
     """
@@ -41,5 +41,6 @@ def upload_model_to_s3(file_name, bucket_name, object_name):
 
 if __name__ == "__main__":
     # Replace with your actual bucket name and file path
-    train_data = load_data_from_s3('ml-iris-demo-project-bucket', 'data/iris_train.csv')  
+    train_data = load_data_from_s3('ml-iris-demo-project-new-bucket', 'data/iris_train.csv')  
     train_model(train_data)
+[ec2-user@ip-172-31-23-139 ~]
