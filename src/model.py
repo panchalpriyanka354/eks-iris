@@ -43,4 +43,3 @@ if __name__ == "__main__":
     # Replace with your actual bucket name and file path
     train_data = load_data_from_s3('ml-iris-demo-project-new-bucket', 'data/iris_train.csv')  
     train_model(train_data)
-[ec2-user@ip-172-31-23-139 ~]
