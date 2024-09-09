@@ -4,14 +4,16 @@ import pandas as pd
 import boto3
 
 # Initialize the Flask app
-app = Flask(__name__)
+app = Flask(__name__,template_folder='src/templates')
 
 # S3 bucket details
 S3_BUCKET = 'ml-iris-demo-project-new-bucket'
 S3_MODEL_PATH = 'src/model.pkl'
 LOCAL_MODEL_PATH = 'model.pkl'
+TEMPLATE_S3_PATH = 'src/templates/index.html'
+LOCAL_TEMPLATE_PATH = 'src/templates/index.html'
 
-def download_model_from_s3(bucket, s3_path, local_path):
+def download_model_from_s3(bucket, s3_path, local_path):	
     """Downloads the model file from the specified S3 bucket."""
     s3 = boto3.client('s3')
     try:
@@ -29,6 +31,19 @@ try:
 except Exception as e:
     print(f"Failed to load model: {e}")
     model = None
+	
+# Download the template from S3 to ensure it is available for rendering
+def load_template():
+    try:
+        download_file_from_s3(S3_BUCKET, TEMPLATE_S3_PATH, LOCAL_TEMPLATE_PATH)
+        print(f"Template downloaded successfully from {TEMPLATE_S3_PATH}.")
+    except Exception as e:
+        print(f"Failed to download template: {e}")
+
+# Download template and model when starting the server
+load_template()
+model = load_model()	
+
 
 @app.route('/')
 def home():
