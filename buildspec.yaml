@@ -5,28 +5,29 @@ phases:
     commands:
       - echo "Logging in to Amazon ECR..."
       - aws --version
-      - export AWS_DEFAULT_REGION=us-east-1
-      - echo "AWS region set to $AWS_DEFAULT_REGION"
-      - export REPOSITORY_URI=863518422262.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo
-      - echo "Logging in to ECR..."
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 863518422262.dkr.ecr.us-east-1.amazonaws.com
+      - AWS_DEFAULT_REGION=us-east-1
+      - echo $AWS_DEFAULT_REGION
+      - REPOSITORY_URI=863518422262.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - AWS_ACCESS_KEY_ID=AKIA4SDNVOT3O543TY4M
+      - AWS_SECRET_ACCESS_KEY=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
 
   build:
     commands:
       - echo "Building the Docker image..."
       - docker build -t ml-iris-app .
-      - echo "Docker image created successfully"
+      - echo "Docker image got created successfully"
       - echo "Tagging the Docker image..."
-      - docker tag ml-iris-app $REPOSITORY_URI:latest
+      - docker tag ml-iris-app 863518422262.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
 
   post_build:
     commands:
       - echo "Build completed on `date`"
       - echo "Pushing the Docker image to Amazon ECR..."
-      - docker push $REPOSITORY_URI:latest
-      - echo "Docker image successfully pushed to ECR"
-      - echo "Deploying the Docker image to Elastic Kubernetes Service (EKS)..."
-
+      - docker push 863518422262.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
+      - echo "Deploy the Docker image to Elastic Kubernetes"
+      - echo "docker pusehd to ECR"
+     
 artifacts:
   files:
     - '**/*'
