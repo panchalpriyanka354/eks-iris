@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app555
+  name: iris-codedeploy
   labels:
-    app: my-app555
+    app: iris-codedeploy
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: my-app555
+      app: iris-codedeploy
   template:
     metadata:
       labels:
-        app: my-app555
+        app: iris-codedeploy
     spec:
       containers:
-      - name: my-app555-container
+      - name: iris-codedeploy-container
         image: 863518422262.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo
         ports:
         - containerPort: 80
