@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: my-app555-container
-        image: 730335461340.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo:latest
+        image: 863518422262.dkr.ecr.us-east-1.amazonaws.com/ecr-iris-repo
         ports:
         - containerPort: 80
