@@ -1,1 +1,4 @@
+#!/bin/bash
+echo "ApplicationStart hook executed successfully!"
+exit 0
 
