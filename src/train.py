@@ -2,9 +2,9 @@ import pandas as pd
 import pickle
 import os
 import subprocess
-from scikit-learn.ensemble import RandomForestClassifier
-from scikit-learn.model_selection import train_test_split
-from scikit-learn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 # Load dataset
 data = pd.read_csv("data/iris_train.csv")
