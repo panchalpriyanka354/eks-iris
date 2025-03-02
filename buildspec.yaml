@@ -30,8 +30,8 @@ phases:
       - echo "Pushing the Docker image to Amazon ECR..."
       - docker push $REPOSITORY_URI:latest
       - echo "Deploying the application to EC2..."
-      -#  chmod +x scripts/deploy.sh
-      - #./scripts/deploy.sh
+      - echo "chmod +x scripts/deploy.sh"
+      - echo "./scripts/deploy.sh"
       - echo "Deployment completed."
 
 artifacts:
