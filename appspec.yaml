@@ -1,18 +1,1 @@
-version: 0.0
-os: linux
-files:
-  - source: /
-    destination: /home/ec2-user/app
-hooks:
-  ApplicationStart:
-    - location: scripts/start_app.sh
-      timeout: 300
-      runas: ec2-user
-  ApplicationStop:
-    - location: scripts/stop_app.sh
-      timeout: 300
-      runas: ec2-user
-  ValidateService:
-    - location: scripts/validate_service.sh
-      timeout: 300
-      runas: ec2-user
+
