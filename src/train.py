@@ -7,7 +7,7 @@ from scikit-learn.model_selection import train_test_split
 from scikit-learn.metrics import accuracy_score
 
 # Load dataset
-data = pd.read_csv("src/iris_train.csv")
+data = pd.read_csv("data/iris_train.csv")
 
 # Preprocessing
 X = data.drop(columns=['species'])
@@ -21,7 +21,7 @@ model = RandomForestClassifier(n_estimators=100)
 model.fit(X_train, y_train)
 
 # Save model inside models folder
-model_path = "app/models/model.pkl"
+model_path = "models/model.pkl"
 os.makedirs(os.path.dirname(model_path), exist_ok=True)
 with open(model_path, "wb") as f:
     pickle.dump(model, f)
